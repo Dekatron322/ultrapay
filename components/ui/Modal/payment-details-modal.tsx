@@ -33,15 +33,15 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onReq
   const getPaymentTypeIcon = (type: string) => {
     switch (type) {
       case "Static QR":
-        return <VscVr className="h-5 w-5 text-purple-600" />
+        return <VscVr className="size-5  text-purple-600" />
       case "Dynamic QR":
-        return <VscVr className="h-5 w-5 text-blue-600" />
+        return <VscVr className="size-5  text-blue-600" />
       case "Link":
-        return <VscLink className="h-5 w-5 text-green-600" />
+        return <VscLink className="size-5  text-green-600" />
       case "API":
-        return <VscCode className="h-5 w-5 text-orange-600" />
+        return <VscCode className="size-5  text-orange-600" />
       default:
-        return <div className="h-5 w-5 rounded-full bg-gray-300"></div>
+        return <div className="size-5  rounded-full bg-gray-300"></div>
     }
   }
 
@@ -117,11 +117,11 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onReq
                 <span className="text-sm font-medium text-[#101828]">{payment.label}</span>
                 <div onClick={() => handleCopy(payment.label)} className="cursor-pointer rounded p-1 hover:bg-gray-100">
                   {copied ? (
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <VscCopy className="h-4 w-4 text-gray-400" />
+                    <VscCopy className="size-4 text-gray-400" />
                   )}
                 </div>
               </div>
@@ -148,7 +148,7 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onReq
                     payment.status
                   )}`}
                 >
-                  <div className={`mr-2 h-2 w-2 rounded-full ${getStatusDotColor(payment.status)}`}></div>
+                  <div className={`mr-2 size-2  rounded-full ${getStatusDotColor(payment.status)}`}></div>
                   {payment.status}
                 </span>
               </div>
@@ -198,11 +198,11 @@ const PaymentDetailsModal: React.FC<PaymentDetailsModalProps> = ({ isOpen, onReq
                   className="cursor-pointer rounded p-1 hover:bg-gray-100"
                 >
                   {copied ? (
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <VscCopy className="h-4 w-4 text-gray-400" />
+                    <VscCopy className="size-4 text-gray-400" />
                   )}
                 </div>
               </div>

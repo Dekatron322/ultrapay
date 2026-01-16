@@ -1,13 +1,13 @@
 "use client"
 
 import DashboardNav from "components/Navbar/DashboardNav"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { USDTIcon, USDCIcon, BTCIcon } from "components/Icons/LogoIcons"
+import { BTCIcon, USDCIcon, USDTIcon } from "components/Icons/LogoIcons"
 import Image from "next/image"
 import TransactionDetailsModal from "components/ui/Modal/transaction-details-modal"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, ChevronDown, ChevronUp, Filter, SortAsc, SortDesc, X, Eye } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronUp, Eye, Filter, SortAsc, SortDesc, X } from "lucide-react"
 import React from "react"
 
 // Time filter types
@@ -673,7 +673,7 @@ const TransactionTable = ({
       case "USDC":
         return <USDCIcon size={24} className="mr-2" />
       default:
-        return <div className="mr-2 h-6 w-6 rounded-full bg-gray-200"></div>
+        return <div className="mr-2 size-6 rounded-full bg-gray-200"></div>
     }
   }
 
@@ -681,8 +681,8 @@ const TransactionTable = ({
     switch (source) {
       case "Payment Link":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
-            <svg className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-blue-100">
+            <svg className="size-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -694,8 +694,8 @@ const TransactionTable = ({
         )
       case "Static QR":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
-            <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-purple-100">
+            <svg className="size-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -706,7 +706,7 @@ const TransactionTable = ({
           </div>
         )
       default:
-        return <div className="mr-2 h-8 w-8 rounded-lg bg-gray-100"></div>
+        return <div className="mr-2 size-8 rounded-lg bg-gray-100"></div>
     }
   }
 
@@ -950,7 +950,7 @@ const TransactionTable = ({
                     </td>
                     <td className="whitespace-nowrap px-2 py-3">
                       <div className="flex items-center">
-                        <div className="mr-1 flex h-5 w-5 items-center justify-center rounded-lg bg-blue-100">
+                        <div className="mr-1 flex size-5  items-center justify-center rounded-lg bg-blue-100">
                           <svg
                             className="h-2.5 w-2.5 text-blue-600"
                             fill="none"
@@ -1547,7 +1547,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                        <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1569,7 +1569,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="mt-4">
-                      <h3 className="text-sm font-medium text-gray-500">Today's Collection</h3>
+                      <h3 className="text-sm font-medium text-gray-500">Today&apos;s Collection</h3>
                       {isLoading ? (
                         <div className="mt-2 h-8 w-32 animate-pulse rounded bg-gray-200"></div>
                       ) : (
@@ -1594,7 +1594,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
-                        <svg className="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1638,7 +1638,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                        <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1684,7 +1684,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-                        <svg className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"

@@ -1,22 +1,15 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as BasicFormInput } from "components/ui/Input/Input"
 import { FormInputModule } from "components/ui/Input/EmailInput"
-import { PasswordInputModule } from "components/ui/Input/PasswordInput"
-import { motion, AnimatePresence } from "framer-motion"
+
+import { motion } from "framer-motion"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
-import {
-  ContactIconOutline,
-  EmailIconOutline,
-  HousesOutlineIcon,
-  MapIconOutline,
-  SecurityIconOutline,
-  UserOutlineIcon,
-} from "components/Icons/LogoIcons"
+import { EmailIconOutline, MapIconOutline, SecurityIconOutline, UserOutlineIcon } from "components/Icons/LogoIcons"
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc"
 import VerificationModal from "components/ui/Modal/verification-modal"
 
@@ -503,7 +496,7 @@ const BusinessInformation: React.FC = () => {
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${
+                  className={`flex size-8 items-center justify-center rounded-full border-2 ${
                     step === currentStep
                       ? "border-[#1447E6] bg-[#1447E6] text-white"
                       : step < currentStep
@@ -570,11 +563,11 @@ const BusinessInformation: React.FC = () => {
                   <img
                     src={previewUrl}
                     alt={fileName}
-                    className="h-16 w-16 rounded-lg border border-gray-300 object-cover"
+                    className="size-16 rounded-lg border border-gray-300 object-cover"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-gray-300 bg-gray-200">
-                    <svg className="h-8 w-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex size-16 items-center justify-center rounded-lg border border-gray-300 bg-gray-200">
+                    <svg className="size-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -732,7 +725,7 @@ const BusinessInformation: React.FC = () => {
                   className="space-y-4"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <MapIconOutline size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">Business Address</h3>
@@ -780,7 +773,7 @@ const BusinessInformation: React.FC = () => {
                         <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                           <div className="flex flex-col items-center justify-center pb-6 pt-5">
                             <svg
-                              className="mb-4 h-8 w-8 text-gray-500"
+                              className="mb-4 size-8 text-gray-500"
                               aria-hidden="true"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -834,7 +827,7 @@ const BusinessInformation: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <SecurityIconOutline size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">Proof of Business Formation</h3>
@@ -854,7 +847,7 @@ const BusinessInformation: React.FC = () => {
                           <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                             <div className="flex flex-col items-center justify-center pb-6 pt-5">
                               <svg
-                                className="mb-4 h-8 w-8 text-gray-500"
+                                className="mb-4 size-8 text-gray-500"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -906,7 +899,7 @@ const BusinessInformation: React.FC = () => {
                           <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                             <div className="flex flex-col items-center justify-center pb-6 pt-5">
                               <svg
-                                className="mb-4 h-8 w-8 text-gray-500"
+                                className="mb-4 size-8 text-gray-500"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -958,7 +951,7 @@ const BusinessInformation: React.FC = () => {
                           <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                             <div className="flex flex-col items-center justify-center pb-6 pt-5">
                               <svg
-                                className="mb-4 h-8 w-8 text-gray-500"
+                                className="mb-4 size-8 text-gray-500"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -1013,7 +1006,7 @@ const BusinessInformation: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <UserOutlineIcon size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">Ultimate Beneficial Owner (UBO)</h3>
@@ -1105,7 +1098,7 @@ const BusinessInformation: React.FC = () => {
                               <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                                 <div className="flex flex-col items-center justify-center pb-6 pt-5">
                                   <svg
-                                    className="mb-4 h-8 w-8 text-gray-500"
+                                    className="mb-4 size-8 text-gray-500"
                                     aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -1182,7 +1175,7 @@ const BusinessInformation: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <UserOutlineIcon size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">Representative Information</h3>
@@ -1245,7 +1238,7 @@ const BusinessInformation: React.FC = () => {
                           <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
                             <div className="flex flex-col items-center justify-center pb-6 pt-5">
                               <svg
-                                className="mb-4 h-8 w-8 text-gray-500"
+                                className="mb-4 size-8 text-gray-500"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"

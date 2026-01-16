@@ -69,14 +69,14 @@ const PaymentLinkGeneratedModal: React.FC<PaymentLinkGeneratedModalProps> = ({ i
             {/* Header */}
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600">
+                <div className="flex size-8 items-center justify-center rounded-full bg-blue-600">
                   <span className="text-xs font-bold text-white">UP</span>
                 </div>
                 <span className="text-sm font-medium text-gray-900">Pay with UltraPay</span>
               </div>
               <div className="flex items-center justify-center">
                 <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                  <div className="mr-2 h-2 w-2 rounded-full bg-green-500"></div>
+                  <div className="mr-2 size-2  rounded-full bg-green-500"></div>
                   Active
                 </span>
               </div>

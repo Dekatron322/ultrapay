@@ -4,18 +4,9 @@ import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { VscArrowLeft } from "react-icons/vsc"
 import Image from "next/image"
-
-interface Testimonial {
-  id: number
-  image: string
-  quote: string
-  name: string
-  title: string
-  company: string
-}
 
 const OtpPage: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
@@ -23,7 +14,6 @@ const OtpPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [counter, setCounter] = useState<number>(60)
   const [canResend, setCanResend] = useState<boolean>(false)
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const router = useRouter()
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
 
@@ -256,7 +246,7 @@ const OtpPage: React.FC = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-[#101836]">
-                    Didn't receive the code?{" "}
+                    Didn&apos;t receive the code?{" "}
                     <button
                       type="button"
                       onClick={handleResend}

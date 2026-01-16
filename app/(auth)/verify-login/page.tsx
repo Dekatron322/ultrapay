@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { VscArrowLeft } from "react-icons/vsc"
 import Image from "next/image"
 
@@ -256,7 +256,7 @@ const VerifyLogin: React.FC = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-[#101836]">
-                    Didn't receive the code?{" "}
+                    Didn&apos;t receive the code?{" "}
                     <button
                       type="button"
                       onClick={handleResend}

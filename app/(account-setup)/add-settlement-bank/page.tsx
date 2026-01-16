@@ -1,13 +1,13 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as BasicFormInput } from "components/ui/Input/Input"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
-import { SecurityIconOutline, HousesOutlineIcon } from "components/Icons/LogoIcons"
+import { HousesOutlineIcon, SecurityIconOutline } from "components/Icons/LogoIcons"
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc"
 import { notify } from "components/ui/Notification/Notification"
 
@@ -218,7 +218,7 @@ const AddSettlementBank: React.FC = () => {
           <React.Fragment key={step}>
             <div className="flex flex-col items-center">
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${
+                className={`flex size-8 items-center justify-center rounded-full border-2 ${
                   step === currentStep
                     ? "border-[#1447E6] bg-[#1447E6] text-white"
                     : step < currentStep
@@ -302,7 +302,7 @@ const AddSettlementBank: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <SecurityIconOutline size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">BVN Verification</h3>
@@ -336,7 +336,7 @@ const AddSettlementBank: React.FC = () => {
                       >
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="size-5  text-green-500" fill="currentColor" viewBox="0 0 20 20">
                               <path
                                 fillRule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -374,7 +374,7 @@ const AddSettlementBank: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
                       <HousesOutlineIcon size={32} className="text-blue-600" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">Bank Account Details</h3>
@@ -426,7 +426,7 @@ const AddSettlementBank: React.FC = () => {
                       >
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="size-5  text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                               <path
                                 fillRule="evenodd"
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"

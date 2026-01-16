@@ -41,7 +41,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({ isOpe
       case "BTC":
         return <BTCIcon size={20} />
       default:
-        return <div className="h-5 w-5 rounded-full bg-gray-300"></div>
+        return <div className="size-5  rounded-full bg-gray-300"></div>
     }
   }
 
@@ -138,11 +138,11 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({ isOpe
                 <span className="text-sm font-medium text-[#101828]">txn_7f8a9b2c3d4e5</span>
                 <div onClick={handleCopyTransactionId} className="cursor-pointer rounded p-1 hover:bg-gray-100">
                   {copied ? (
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -187,7 +187,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({ isOpe
                   )}`}
                 >
                   <div
-                    className={`mr-2 h-2 w-2 rounded-full ${
+                    className={`mr-2 size-2  rounded-full ${
                       transaction.status === "successful"
                         ? "bg-green-500"
                         : transaction.status === "confirming"
@@ -274,11 +274,11 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({ isOpe
                 <span className="text-sm font-medium text-[#101828]">0x8f3e2a1b9c35Cc6623C0523243o8i</span>
                 <div onClick={handleCopyTransactionId} className="cursor-pointer rounded p-1 hover:bg-gray-100">
                   {copied ? (
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -300,11 +300,11 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({ isOpe
                 <span className="text-sm font-medium text-[#101828]">ox8f3e2a1b9c35Cc6623C5232...</span>
                 <div onClick={handleCopyTransactionId} className="cursor-pointer rounded p-1 hover:bg-gray-100">
                   {copied ? (
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"

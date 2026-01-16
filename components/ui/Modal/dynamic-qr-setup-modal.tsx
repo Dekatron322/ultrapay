@@ -181,7 +181,7 @@ const DynamicQrSetupModal: React.FC<DynamicQrSetupModalProps> = ({ isOpen, onReq
                     }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      className={`inline-block size-4 transform rounded-full bg-white transition-transform ${
                         formData.status ? "translate-x-6" : "translate-x-1"
                       }`}
                     />

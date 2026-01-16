@@ -1,12 +1,11 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { PasswordInputModule } from "components/ui/Input/PasswordInput"
 import { ButtonModule } from "components/ui/Button/Button"
-import { FormInputModule } from "components/ui/Input/Input"
 import { FormInputModule as EmailInput } from "components/ui/Input/EmailInput"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
 
 interface Testimonial {
@@ -160,7 +159,7 @@ const SignIn: React.FC = () => {
                     id="remember"
                     name="remember"
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-[#1447E6] focus:ring-[#1447E6]"
+                    className="size-4 rounded border-gray-300 text-[#1447E6] focus:ring-[#1447E6]"
                   />
                   <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
                     Remember me
@@ -235,7 +234,7 @@ const SignIn: React.FC = () => {
             className=" max-sm:mt-4"
           >
             <p className="text-sm text-[#101836]">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/sign-up"
                 className="font-medium text-[#1447E6] transition-all duration-200 ease-in-out hover:text-[#100A55]"

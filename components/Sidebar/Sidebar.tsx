@@ -6,7 +6,7 @@ import { Links } from "./Links"
 import Image from "next/image"
 import clsx from "clsx"
 import { usePopover } from "components/Navbar/use-popover"
-import { Settings, User, Shield, Key, Building2, CheckCircle } from "lucide-react"
+import { Building2, CheckCircle, Key, Settings, Shield, User } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 

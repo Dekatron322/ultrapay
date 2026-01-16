@@ -1,29 +1,27 @@
 "use client"
-
 import { useState } from "react"
 import {
-  User,
-  Mail,
-  Phone,
   Building2,
   Calendar,
-  Edit2,
-  Save,
-  X,
   Camera,
-  Shield,
-  Key,
-  Bell,
-  Globe,
-  Map,
+  Check,
   CheckCircle,
+  Copy,
   CreditCard,
-  Webhook,
-  FileText,
+  Edit2,
   Eye,
   EyeOff,
-  Copy,
-  Check,
+  FileText,
+  Globe,
+  Key,
+  Mail,
+  Map,
+  Phone,
+  Save,
+  Shield,
+  User,
+  Webhook,
+  X,
 } from "lucide-react"
 
 interface ProfileContentProps {
@@ -106,7 +104,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                 </span>
               </div>
               <button className="absolute bottom-0 right-0 rounded-full border border-gray-200 bg-white p-2 shadow-lg hover:bg-gray-50">
-                <Camera className="h-4 w-4 text-gray-600" />
+                <Camera className="size-4 text-gray-600" />
               </button>
             </div>
 
@@ -163,7 +161,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                   <div className="rounded-lg border border-gray-200 p-4">
                     <div className="mb-4 grid grid-cols-1 items-center justify-between gap-6 border-b border-gray-200 pb-2 md:grid-cols-2">
                       <div className="flex gap-3">
-                        <User className="mt-1 h-4 w-4 text-gray-400" />
+                        <User className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Business name</p>
                           <p className="text-gray-900">
@@ -173,7 +171,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                       </div>
 
                       <div className="flex gap-3">
-                        <Mail className="mt-1 h-4 w-4 text-gray-400" />
+                        <Mail className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Business Email</p>
                           <p className="text-gray-900">{originalData.email}</p>
@@ -183,7 +181,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="mb-4 grid grid-cols-1 items-center justify-between gap-6 border-b border-gray-200 pb-2 md:grid-cols-2">
                       <div className="flex gap-3">
-                        <Shield className="mt-1 h-4 w-4 text-gray-400" />
+                        <Shield className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Business Category</p>
                           <p className="text-gray-900">Limited Liability Company</p>
@@ -191,7 +189,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                       </div>
 
                       <div className="flex gap-3">
-                        <Globe className="mt-1 h-4 w-4 text-gray-400" />
+                        <Globe className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Business Type</p>
                           <p className="text-gray-900">Technology</p>
@@ -201,7 +199,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="grid grid-cols-1 items-center justify-between gap-6 md:grid-cols-2">
                       <div className="flex gap-3">
-                        <Map className="mt-1 h-4 w-4 text-gray-400" />
+                        <Map className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Nationality</p>
                           <p className="text-gray-900">Nigerian</p>
@@ -209,7 +207,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                       </div>
 
                       <div className="flex gap-3">
-                        <Building2 className="mt-1 h-4 w-4 text-gray-400" />
+                        <Building2 className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Business full address</p>
                           <p className="text-gray-900">123 Business Street, Lagos, Nigeria</p>
@@ -228,7 +226,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                   <div className="rounded-lg border border-gray-200 p-4">
                     <div className="mb-4 grid grid-cols-1 items-center justify-between gap-6 border-b border-gray-200 pb-2 md:grid-cols-2">
                       <div className="flex gap-3">
-                        <User className="mt-1 h-4 w-4 text-gray-400" />
+                        <User className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Full Name</p>
                           <p className="text-gray-900">
@@ -238,7 +236,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                       </div>
 
                       <div className="flex gap-3">
-                        <Calendar className="mt-1 h-4 w-4 text-gray-400" />
+                        <Calendar className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Date of Birth</p>
                           <p className="text-gray-900">{originalData.dob}</p>
@@ -248,7 +246,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="grid grid-cols-1 items-center justify-between gap-6 md:grid-cols-2">
                       <div className="flex gap-3">
-                        <Phone className="mt-1 h-4 w-4 text-gray-400" />
+                        <Phone className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Phone Number</p>
                           <p className="text-gray-900">{originalData.phone}</p>
@@ -256,7 +254,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                       </div>
 
                       <div className="flex gap-3">
-                        <Globe className="mt-1 h-4 w-4 text-gray-400" />
+                        <Globe className="mt-1 size-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">Nationality</p>
                           <p className="text-gray-900">Nigerian</p>
@@ -276,7 +274,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
               <div className="space-y-4">
                 <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4">
                   <div className="flex items-center gap-3">
-                    <Key className="h-5 w-5 text-gray-600" />
+                    <Key className="size-5  text-gray-600" />
                     <div>
                       <h4 className="font-medium text-gray-900">Password</h4>
                       <p className="text-sm text-gray-500">Last changed 3 months ago</p>
@@ -287,7 +285,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                 <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4">
                   <div className="flex items-center gap-3">
-                    <Shield className="h-5 w-5 text-gray-600" />
+                    <Shield className="size-5  text-gray-600" />
                     <div>
                       <h4 className="font-medium text-gray-900">Two-Factor Authentication</h4>
                       <p className="text-sm text-gray-500">Add an extra layer of security</p>
@@ -298,7 +296,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                 <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4">
                   <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-gray-600" />
+                    <Phone className="size-5  text-gray-600" />
                     <div>
                       <h4 className="font-medium text-gray-900">Phone Verification</h4>
                       <p className="text-sm text-gray-500">Verified: +234 800 000 0000</p>
@@ -325,7 +323,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
               {/* Verification Status */}
               <div className="rounded-lg border border-green-200 bg-green-50 p-6">
                 <div className="mb-4 flex items-center gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                  <CheckCircle className="size-6 text-green-600" />
                   <div>
                     <h4 className="text-lg font-semibold text-green-800">KYB Verification</h4>
                     <p className="text-green-700">Verified</p>
@@ -347,7 +345,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between border-b border-gray-100 py-3">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-gray-400" />
+                        <FileText className="size-5  text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">Proof of address</p>
                           <p className="text-sm text-gray-500">Owner, Shareholder</p>
@@ -358,7 +356,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="flex items-center justify-between border-b border-gray-100 py-3">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-gray-400" />
+                        <FileText className="size-5  text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">Certificate of Incorporation / CAC</p>
                           <p className="text-sm text-gray-500">Owner, Shareholder</p>
@@ -369,7 +367,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="flex items-center justify-between border-b border-gray-100 py-3">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-gray-400" />
+                        <FileText className="size-5  text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">Memorandum of Association (MOA)</p>
                           <p className="text-sm text-gray-500">Owner, Shareholder</p>
@@ -380,7 +378,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
 
                     <div className="flex items-center justify-between border-b border-gray-100 py-3">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-gray-400" />
+                        <FileText className="size-5  text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">TIN or VAT Certificate</p>
                           <p className="text-sm text-gray-500">Owner, Shareholder</p>
@@ -437,7 +435,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                   <div className="mt-6 border-t border-gray-100 pt-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-gray-400" />
+                        <FileText className="size-5  text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">International passport.jpg</p>
                           <p className="text-sm text-gray-500">Owner, Shareholder</p>
@@ -459,7 +457,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                 <div className="rounded-lg border border-gray-200 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <CreditCard className="h-5 w-5 text-gray-600" />
+                      <CreditCard className="size-5  text-gray-600" />
                       <div>
                         <h4 className="font-medium text-gray-900">Primary Bank Account</h4>
                         <p className="text-sm text-gray-500">Default account for withdrawals</p>
@@ -502,7 +500,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                 <div className="rounded-lg border border-gray-200 p-4">
                   <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                      <Key className="h-5 w-5 text-gray-600" />
+                      <Key className="size-5  text-gray-600" />
                       <div>
                         <h4 className="font-medium text-gray-900">API Keys</h4>
                         <p className="text-sm text-gray-500">Manage your API access keys</p>
@@ -531,9 +529,9 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                             title={showLiveKey ? "Hide key" : "Show key"}
                           >
                             {showLiveKey ? (
-                              <EyeOff className="h-4 w-4 text-gray-600" />
+                              <EyeOff className="size-4 text-gray-600" />
                             ) : (
-                              <Eye className="h-4 w-4 text-gray-600" />
+                              <Eye className="size-4 text-gray-600" />
                             )}
                           </button>
                           <button
@@ -542,9 +540,9 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                             title={copiedLiveKey ? "Copied!" : "Copy key"}
                           >
                             {copiedLiveKey ? (
-                              <Check className="h-4 w-4 text-green-600" />
+                              <Check className="size-4 text-green-600" />
                             ) : (
-                              <Copy className="h-4 w-4 text-gray-600" />
+                              <Copy className="size-4 text-gray-600" />
                             )}
                           </button>
                         </div>
@@ -570,9 +568,9 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                             title={showTestKey ? "Hide key" : "Show key"}
                           >
                             {showTestKey ? (
-                              <EyeOff className="h-4 w-4 text-gray-600" />
+                              <EyeOff className="size-4 text-gray-600" />
                             ) : (
-                              <Eye className="h-4 w-4 text-gray-600" />
+                              <Eye className="size-4 text-gray-600" />
                             )}
                           </button>
                           <button
@@ -581,9 +579,9 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                             title={copiedTestKey ? "Copied!" : "Copy key"}
                           >
                             {copiedTestKey ? (
-                              <Check className="h-4 w-4 text-green-600" />
+                              <Check className="size-4 text-green-600" />
                             ) : (
-                              <Copy className="h-4 w-4 text-gray-600" />
+                              <Copy className="size-4 text-gray-600" />
                             )}
                           </button>
                         </div>
@@ -595,7 +593,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                 <div className="rounded-lg border border-gray-200 p-4">
                   <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                      <Webhook className="h-5 w-5 text-gray-600" />
+                      <Webhook className="size-5  text-gray-600" />
                       <div>
                         <h4 className="font-medium text-gray-900">Webhooks</h4>
                         <p className="text-sm text-gray-500">Configure webhook endpoints</p>

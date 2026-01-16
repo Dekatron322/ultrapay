@@ -1,11 +1,10 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
-import { FormInputModule } from "components/ui/Input/EmailInput"
 import { motion, AnimatePresence } from "framer-motion"
-import { HousesOutlineIcon, UserOutlineIcon, SettingIconOutline } from "components/Icons/LogoIcons"
+import { HousesOutlineIcon, SettingIconOutline, UserOutlineIcon } from "components/Icons/LogoIcons"
 
 interface Testimonial {
   id: number
@@ -160,7 +159,7 @@ const SelectUserType: React.FC = () => {
                         selectedDepartment === department.id ? "scale-100 opacity-100" : "scale-50 opacity-0"
                       }`}
                     >
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1447E6]">
+                      <div className="flex size-6 items-center justify-center rounded-full bg-[#1447E6]">
                         <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
@@ -202,7 +201,7 @@ const SelectUserType: React.FC = () => {
                 >
                   {loading ? (
                     <div className="flex items-center justify-center">
-                      <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+                      <div className="size-5  animate-spin rounded-full border-b-2 border-white"></div>
                       <span className="ml-2">Processing...</span>
                     </div>
                   ) : (
@@ -259,7 +258,7 @@ const SelectUserType: React.FC = () => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="mb-8 text-6xl text-[#1447E6]"
                 >
-                  "
+                  &quot;
                 </motion.div>
 
                 {/* Testimonial Quote */}

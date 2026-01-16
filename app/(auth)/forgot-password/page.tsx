@@ -1,12 +1,10 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { PasswordInputModule } from "components/ui/Input/PasswordInput"
 import { ButtonModule } from "components/ui/Button/Button"
-import { FormInputModule } from "components/ui/Input/Input"
 import { FormInputModule as EmailInput } from "components/ui/Input/EmailInput"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
 
 interface Testimonial {
@@ -118,7 +116,7 @@ const ForgotPassword: React.FC = () => {
             <div className="mb-8 border-b pb-6 ">
               <h1 className="text-3xl font-bold text-[#1447E6]">Forgot Password</h1>
               <p className="mt-2 text-[#101836]">
-                Can't remember your password? Enter your registered email address to reset your password.
+                Can&apos;t remember your password? Enter your registered email address to reset your password.
               </p>
             </div>
 

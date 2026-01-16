@@ -1,32 +1,17 @@
 "use client"
 
 import DashboardNav from "components/Navbar/DashboardNav"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { USDTIcon, USDCIcon, BTCIcon } from "components/Icons/LogoIcons"
 import Image from "next/image"
 import PaymentDetailsModal from "components/ui/Modal/payment-details-modal"
 import DeletePaymentModal from "components/ui/Modal/delete-payment-modal"
 import PausePlayPaymentModal from "components/ui/Modal/pause-play-payment-modal"
 import CreatePaymentModal from "components/ui/Modal/create-payment-modal"
 import { AnimatePresence, motion } from "framer-motion"
-import {
-  ArrowLeft,
-  ChevronDown,
-  ChevronUp,
-  Filter,
-  SortAsc,
-  SortDesc,
-  X,
-  Eye,
-  Copy,
-  Play,
-  Pause,
-  Trash2,
-} from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronUp, Filter, SortAsc, SortDesc, X } from "lucide-react"
 import { ButtonModule } from "components/ui/Button/Button"
-import { AddIcon } from "components/Icons/Icons"
-import { VscAdd, VscEye, VscCopy, VscDebugStart, VscDebugPause, VscTrash, VscCheck } from "react-icons/vsc"
+import { VscAdd, VscCheck, VscCopy, VscDebugStart, VscDebugPause, VscEye, VscTrash } from "react-icons/vsc"
 
 // Time filter types
 type TimeFilter = "day" | "week" | "month" | "all"
@@ -598,8 +583,8 @@ const PaymentTable = ({
     switch (type) {
       case "Static QR":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
-            <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-purple-100">
+            <svg className="size-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -611,8 +596,8 @@ const PaymentTable = ({
         )
       case "Dynamic QR":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
-            <svg className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-blue-100">
+            <svg className="size-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -624,8 +609,8 @@ const PaymentTable = ({
         )
       case "Link":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
-            <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-green-100">
+            <svg className="size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -637,8 +622,8 @@ const PaymentTable = ({
         )
       case "API":
         return (
-          <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100">
-            <svg className="h-4 w-4 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-8 items-center justify-center rounded-lg bg-orange-100">
+            <svg className="size-4 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -649,7 +634,7 @@ const PaymentTable = ({
           </div>
         )
       default:
-        return <div className="mr-2 h-8 w-8 rounded-lg bg-gray-100"></div>
+        return <div className="mr-2 size-8 rounded-lg bg-gray-100"></div>
     }
   }
 
@@ -783,7 +768,7 @@ const PaymentTable = ({
                       title="Copy reference"
                     >
                       {copiedPaymentId === payment.id ? (
-                        <VscCheck className="h-4 w-4 text-green-500" />
+                        <VscCheck className="size-4 text-green-500" />
                       ) : (
                         <VscCopy className="h-4 w-4" />
                       )}
@@ -863,7 +848,7 @@ const PaymentTable = ({
                 title="Copy reference"
               >
                 {copiedPaymentId === payment.id ? (
-                  <VscCheck className="h-4 w-4 text-green-500" />
+                  <VscCheck className="size-4 text-green-500" />
                 ) : (
                   <VscCopy className="h-4 w-4" />
                 )}
@@ -1394,7 +1379,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                        <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1431,7 +1416,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                        <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1470,7 +1455,7 @@ export default function Dashboard() {
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b  max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-                        <svg className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1514,7 +1499,7 @@ export default function Dashboard() {
                   <div className="pr-6 last:pr-0 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
-                        <svg className="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-5  text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"

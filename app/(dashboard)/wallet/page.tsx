@@ -1,9 +1,9 @@
 "use client"
 
 import DashboardNav from "components/Navbar/DashboardNav"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { USDTIcon, USDCIcon, BTCIcon } from "components/Icons/LogoIcons"
+import { BTCIcon, USDCIcon, USDTIcon } from "components/Icons/LogoIcons"
 import Image from "next/image"
 import TransactionDetailsModal from "components/ui/Modal/transaction-details-modal"
 import WithdrawModal from "components/ui/Modal/withdraw-modal"
@@ -952,7 +952,7 @@ export default function Dashboard() {
       case "USDC":
         return <USDCIcon size={28} className="mr-2" />
       default:
-        return <div className="mr-2 h-7 w-7 rounded-full bg-gray-300"></div>
+        return <div className="mr-2 size-7  rounded-full bg-gray-300"></div>
     }
   }
 
@@ -960,8 +960,8 @@ export default function Dashboard() {
     switch (source) {
       case "Payment Link":
         return (
-          <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-blue-100">
-            <svg className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-7  items-center justify-center rounded-full bg-blue-100">
+            <svg className="size-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -973,8 +973,8 @@ export default function Dashboard() {
         )
       case "Static QR":
         return (
-          <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-purple-100">
-            <svg className="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mr-2 flex size-7  items-center justify-center rounded-full bg-purple-100">
+            <svg className="size-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -985,7 +985,7 @@ export default function Dashboard() {
           </div>
         )
       default:
-        return <div className="mr-2 h-7 w-7 rounded-full bg-gray-300"></div>
+        return <div className="mr-2 size-7  rounded-full bg-gray-300"></div>
     }
   }
 
@@ -1081,7 +1081,7 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 sm:h-12 sm:w-12">
                     <svg
-                      className="h-5 w-5 text-white sm:h-6 sm:w-6"
+                      className="size-5  text-white sm:h-6 sm:w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -1118,7 +1118,7 @@ export default function Dashboard() {
                   <p className="mb-1 text-sm font-medium text-gray-500">Available Balance</p>
                   <p className="text-3xl font-bold text-gray-900 sm:text-4xl">₦12,500.00</p>
                   <div className="mt-2 flex items-center justify-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div className="size-2  rounded-full bg-green-500"></div>
                     <p className="text-xs text-green-600">+2.5% from last month</p>
                   </div>
                 </div>
@@ -1137,7 +1137,7 @@ export default function Dashboard() {
                 <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
                   <p className="mb-1 text-xs font-medium text-gray-500 sm:text-sm">Status</p>
                   <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div className="size-2  rounded-full bg-green-500"></div>
                     <p className="text-lg font-bold text-gray-900 sm:text-xl">Active</p>
                   </div>
                   <p className="mt-1 text-xs text-gray-500">All systems operational</p>
@@ -1147,7 +1147,7 @@ export default function Dashboard() {
                 <div className="col-span-2 rounded-lg border border-gray-100 bg-gray-50 p-3 sm:col-span-1">
                   <p className="mb-1 text-xs font-medium text-gray-500 sm:text-sm">Last updated</p>
                   <div className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -1175,9 +1175,9 @@ export default function Dashboard() {
                   {/* Total Wallet Balance */}
                   <div className="rounded-lg border border-gray-100 bg-white p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 sm:h-10 sm:w-10">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-100 sm:h-10 sm:w-10">
                         <svg
-                          className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5"
+                          className="size-4 text-blue-600 sm:h-5 sm:w-5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1218,9 +1218,9 @@ export default function Dashboard() {
                   {/* Pending Deposits */}
                   <div className="rounded-lg border border-gray-100 bg-white p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100 sm:h-10 sm:w-10">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-yellow-100 sm:h-10 sm:w-10">
                         <svg
-                          className="h-4 w-4 text-yellow-600 sm:h-5 sm:w-5"
+                          className="size-4 text-yellow-600 sm:h-5 sm:w-5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1261,9 +1261,9 @@ export default function Dashboard() {
                   {/* Today's Transactions */}
                   <div className="rounded-lg border border-gray-100 bg-white p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 sm:h-10 sm:w-10">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-green-100 sm:h-10 sm:w-10">
                         <svg
-                          className="h-4 w-4 text-green-600 sm:h-5 sm:w-5"
+                          className="size-4 text-green-600 sm:h-5 sm:w-5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1289,7 +1289,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="mt-3">
-                      <h3 className="text-xs font-medium text-gray-500 sm:text-sm">Today's Transactions</h3>
+                      <h3 className="text-xs font-medium text-gray-500 sm:text-sm">Today&apos;s Transactions</h3>
                       {isLoading ? (
                         <div className="mt-2 h-6 w-24 animate-pulse rounded bg-gray-200 sm:h-8 sm:w-32"></div>
                       ) : (
@@ -1304,9 +1304,9 @@ export default function Dashboard() {
                   {/* Withdrawal Limit */}
                   <div className="rounded-lg border border-gray-100 bg-white p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 sm:h-10 sm:w-10">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-purple-100 sm:h-10 sm:w-10">
                         <svg
-                          className="h-4 w-4 text-purple-600 sm:h-5 sm:w-5"
+                          className="size-4 text-purple-600 sm:h-5 sm:w-5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1432,7 +1432,7 @@ export default function Dashboard() {
                               )}`}
                             >
                               <div
-                                className={`mr-1 h-2 w-2 rounded-full ${getStatusDotColor(transaction.status)}`}
+                                className={`mr-1 size-2  rounded-full ${getStatusDotColor(transaction.status)}`}
                               ></div>
                               {transaction.status}
                             </span>

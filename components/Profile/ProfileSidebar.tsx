@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { User, CheckCircle, CreditCard, Shield, Webhook } from "lucide-react"
+import { CheckCircle, CreditCard, Shield, User, Webhook } from "lucide-react"
 
 const tabs = [
   { id: "personal", label: "Personal Info", icon: User, href: "/profile" },
@@ -42,7 +42,7 @@ export default function ProfileSidebar() {
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <Icon className="h-5 w-5 flex-shrink-0" />
+                <Icon className="size-5  flex-shrink-0" />
                 <span className="truncate">{tab.label}</span>
               </Link>
             )

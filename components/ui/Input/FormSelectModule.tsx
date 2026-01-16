@@ -131,7 +131,7 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
           {selectedOption?.icon && (
             <>
               {selectedOption.iconType === "svg" ? (
-                <img src={selectedOption.icon} alt={selectedOption.label} className="h-5 w-5 object-contain" />
+                <img src={selectedOption.icon} alt={selectedOption.label} className="size-5  object-contain" />
               ) : (
                 <span className="text-lg">{selectedOption.icon}</span>
               )}
@@ -191,7 +191,7 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
                     {option.icon && (
                       <>
                         {option.iconType === "svg" ? (
-                          <img src={option.icon} alt={option.label} className="h-5 w-5 object-contain" />
+                          <img src={option.icon} alt={option.label} className="size-5  object-contain" />
                         ) : (
                           <span className="text-lg">{option.icon}</span>
                         )}
@@ -199,7 +199,7 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
                     )}
                     {option.label}
                   </div>
-                  {value === option.value && <Check className="h-4 w-4 text-[#1447E6]" />}
+                  {value === option.value && <Check className="size-4 text-[#1447E6]" />}
                 </div>
               ))
             ) : (

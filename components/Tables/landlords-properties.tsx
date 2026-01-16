@@ -202,7 +202,7 @@ const TenantCardSkeleton = () => (
             </div>
           </div>
         </div>
-        <div className="h-6 w-6 overflow-hidden rounded bg-gray-200">
+        <div className="size-6 overflow-hidden rounded bg-gray-200">
           <motion.div
             className="h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"
             animate={{
@@ -408,7 +408,7 @@ const TenantListItemSkeleton = () => (
               }}
             />
           </div>
-          <div className="h-6 w-6 overflow-hidden rounded bg-gray-200">
+          <div className="size-6 overflow-hidden rounded bg-gray-200">
             <motion.div
               className="h-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"
               animate={{
