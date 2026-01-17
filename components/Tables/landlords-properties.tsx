@@ -130,7 +130,7 @@ const generateRandomTenants = (count: number, properties: Property[]): Tenant[] 
       id: `tenant-${Date.now()}-${index}`,
       name: `Tenant ${index + 1}`,
       email: `tenant${index + 1}@example.com`,
-      phone: `+234${700000000 + index}`,
+      phone: `+234${700000001 + index}`,
       unitNumber: `Unit ${String.fromCharCode(65 + (index % 5))}${(index % 10) + 1}`,
       rentAmount: (Math.random() * 500000).toFixed(2),
       leaseStart: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
