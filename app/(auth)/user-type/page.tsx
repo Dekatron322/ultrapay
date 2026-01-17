@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { HousesOutlineIcon, SettingIconOutline, UserOutlineIcon } from "components/Icons/LogoIcons"
 
 interface Testimonial {

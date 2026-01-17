@@ -11,7 +11,7 @@ import CreatePaymentModal from "components/ui/Modal/create-payment-modal"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, ChevronDown, ChevronUp, Filter, SortAsc, SortDesc, X } from "lucide-react"
 import { ButtonModule } from "components/ui/Button/Button"
-import { VscAdd, VscCheck, VscCopy, VscDebugStart, VscDebugPause, VscEye, VscTrash } from "react-icons/vsc"
+import { VscAdd, VscCheck, VscCopy, VscDebugPause, VscDebugStart, VscEye, VscTrash } from "react-icons/vsc"
 
 // Time filter types
 type TimeFilter = "day" | "week" | "month" | "all"
@@ -760,7 +760,7 @@ const PaymentTable = ({
                       className="rounded-lg p-1.5 text-blue-600 transition-colors hover:bg-blue-50"
                       title="View details"
                     >
-                      <VscEye className="h-4 w-4" />
+                      <VscEye className="size-4" />
                     </button>
                     <button
                       onClick={() => onCopy(payment)}
@@ -770,7 +770,7 @@ const PaymentTable = ({
                       {copiedPaymentId === payment.id ? (
                         <VscCheck className="size-4 text-green-500" />
                       ) : (
-                        <VscCopy className="h-4 w-4" />
+                        <VscCopy className="size-4" />
                       )}
                     </button>
                     <button
@@ -783,9 +783,9 @@ const PaymentTable = ({
                       title={payment.status === "Active" ? "Pause payment" : "Activate payment"}
                     >
                       {payment.status === "Active" ? (
-                        <VscDebugPause className="h-4 w-4" />
+                        <VscDebugPause className="size-4" />
                       ) : (
-                        <VscDebugStart className="h-4 w-4" />
+                        <VscDebugStart className="size-4" />
                       )}
                     </button>
                     <button
@@ -793,7 +793,7 @@ const PaymentTable = ({
                       className="rounded-lg p-1.5 text-red-600 transition-colors hover:bg-red-50"
                       title="Delete payment"
                     >
-                      <VscTrash className="h-4 w-4" />
+                      <VscTrash className="size-4" />
                     </button>
                   </div>
                 </td>
@@ -840,7 +840,7 @@ const PaymentTable = ({
                 className="rounded-lg p-1.5 text-blue-600 hover:bg-blue-50"
                 title="View details"
               >
-                <VscEye className="h-4 w-4" />
+                <VscEye className="size-4" />
               </button>
               <button
                 onClick={() => onCopy(payment)}
@@ -850,7 +850,7 @@ const PaymentTable = ({
                 {copiedPaymentId === payment.id ? (
                   <VscCheck className="size-4 text-green-500" />
                 ) : (
-                  <VscCopy className="h-4 w-4" />
+                  <VscCopy className="size-4" />
                 )}
               </button>
               <button
@@ -863,9 +863,9 @@ const PaymentTable = ({
                 title={payment.status === "Active" ? "Pause payment" : "Activate payment"}
               >
                 {payment.status === "Active" ? (
-                  <VscDebugPause className="h-4 w-4" />
+                  <VscDebugPause className="size-4" />
                 ) : (
-                  <VscDebugStart className="h-4 w-4" />
+                  <VscDebugStart className="size-4" />
                 )}
               </button>
               <button
@@ -873,7 +873,7 @@ const PaymentTable = ({
                 className="rounded-lg p-1.5 text-red-600 hover:bg-red-50"
                 title="Delete payment"
               >
-                <VscTrash className="h-4 w-4" />
+                <VscTrash className="size-4" />
               </button>
             </div>
           </div>
@@ -1389,7 +1389,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1426,7 +1426,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1465,7 +1465,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"

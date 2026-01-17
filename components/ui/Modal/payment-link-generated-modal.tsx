@@ -136,7 +136,7 @@ const PaymentLinkGeneratedModal: React.FC<PaymentLinkGeneratedModalProps> = ({ i
                 onClick={handleCopyUrl}
                 className="flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50 md:w-auto"
               >
-                <Copy className="h-4 w-4" />
+                <Copy className="size-4" />
                 {copied ? "Copied!" : "Copy URL"}
               </button>
             </div>
@@ -148,14 +148,14 @@ const PaymentLinkGeneratedModal: React.FC<PaymentLinkGeneratedModalProps> = ({ i
               onClick={handleShare}
               className="flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="size-4" />
               Share
             </button>
             <button
               onClick={handlePreview}
               className="flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="size-4" />
               Preview
             </button>
             <button

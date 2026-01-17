@@ -862,7 +862,7 @@ const TransactionTable = ({
                     onClick={() => onView(transaction)}
                     className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-900"
                   >
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                     View
                   </button>
                 </td>
@@ -1557,7 +1557,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1604,7 +1604,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-red-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1648,7 +1648,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1755,7 +1755,7 @@ export default function Dashboard() {
                   </button>
 
                   <button className="flex items-center gap-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"

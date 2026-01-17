@@ -116,11 +116,11 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
               <p className="text-gray-600">{originalData.role}</p>
               <div className="mt-2 flex flex-col gap-2 text-sm text-gray-500 md:flex-row md:gap-4">
                 <span className="flex items-center gap-1">
-                  <Mail className="h-4 w-4" />
+                  <Mail className="size-4" />
                   {originalData.email}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Building2 className="h-4 w-4" />
+                  <Building2 className="size-4" />
                   {originalData.company}
                 </span>
               </div>
@@ -134,13 +134,13 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
           >
             {isEditing ? (
               <>
-                <X className="h-4 w-4" />
+                <X className="size-4" />
                 <span className="hidden md:inline">Cancel</span>
                 <span className="md:hidden">X</span>
               </>
             ) : (
               <>
-                <Edit2 className="h-4 w-4" />
+                <Edit2 className="size-4" />
                 <span className="hidden md:inline">Edit Profile</span>
                 <span className="md:hidden">Edit</span>
               </>
@@ -628,7 +628,7 @@ export default function ProfileContent({ activeTab }: ProfileContentProps) {
                 onClick={handleSave}
                 className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
               >
-                <Save className="h-4 w-4" />
+                <Save className="size-4" />
                 Save Changes
               </button>
             </div>

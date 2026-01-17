@@ -110,7 +110,7 @@ const QrGeneratedModal: React.FC<QrGeneratedModalProps> = ({ isOpen, onRequestCl
                 onClick={handleCopyUrl}
                 className="flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50 md:w-auto"
               >
-                <Copy className="h-4 w-4" />
+                <Copy className="size-4" />
                 {copied ? "Copied!" : "Copy URL"}
               </button>
             </div>
@@ -122,14 +122,14 @@ const QrGeneratedModal: React.FC<QrGeneratedModalProps> = ({ isOpen, onRequestCl
               onClick={handleDownloadQr}
               className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
             >
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
               Download QR
             </button>
             <button
               onClick={handlePrint}
               className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
             >
-              <Printer className="h-4 w-4" />
+              <Printer className="size-4" />
               Print
             </button>
             <button
