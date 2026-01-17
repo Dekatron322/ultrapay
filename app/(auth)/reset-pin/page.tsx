@@ -61,7 +61,7 @@ const ResetPin: React.FC = () => {
     setTimeout(() => {
       setLoading(false)
       // Redirect to set-password page
-      router.push("/change-password")
+      router.push("/reset-password")
     }, 1500)
   }
 
