@@ -1070,7 +1070,7 @@ export default function Dashboard() {
             {/* Simplified Wallet Header for Mobile */}
             <div className="mb-6 lg:hidden">
               <div className="mb-4">
-                <h1 className="text-xl font-semibold text-gray-900">Welcome, John Doe</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Welcome, John Ibra</h1>
                 <p className="text-sm text-gray-500">Customer Wallet</p>
               </div>
             </div>
