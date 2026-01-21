@@ -408,8 +408,8 @@ const AccountSetup: React.FC = () => {
     const errors: Record<string, boolean> = {}
 
     if (!idType) errors.idType = true
-    if (!idNumber.trim()) errors.idNumber = true
-    if (!idFrontImage) errors.idFrontImage = true
+    if (idType === "nin" && !idNumber.trim()) errors.idNumber = true
+    if ((idType === "passport" || idType === "driverLicense") && !idFrontImage) errors.idFrontImage = true
     if (!acceptTerms) errors.acceptTerms = true
 
     if (Object.keys(errors).length > 0) {
@@ -636,11 +636,11 @@ const AccountSetup: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mx-auto w-full max-w-2xl rounded-2xl px-4 py-6 sm:px-6 sm:py-8 md:p-8"
           >
-            <div className="mb-4 border-b pb-2">
+            <div className="mb-4  pb-4">
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => router.back()}
-                  className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900"
+                  className="flex items-center gap-2 rounded-lg   px-2 py-1 text-sm text-blue-500 transition-colors hover:bg-blue-50 hover:text-blue-900"
                 >
                   <VscArrowLeft />
                   Back
@@ -895,76 +895,87 @@ const AccountSetup: React.FC = () => {
                       error={fieldErrors.idType}
                     />
 
-                    <BasicFormInput
-                      label="ID Number"
-                      type="text"
-                      name="idNumber"
-                      placeholder={`Enter your ${
-                        formData.idType
-                          ? idTypeOptions
-                              .find((opt) => opt.value === formData.idType)
-                              ?.label.toLowerCase()
-                              ?.split("(")[0]
-                              ?.trim()
-                          : "ID"
-                      } number`}
-                      value={formData.idNumber}
-                      onChange={handleInputChange}
-                      required
-                      error={fieldErrors.idNumber}
-                    />
-
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-gray-700">
-                        Upload ID Document (Front) <span className="text-red-500">*</span>
-                      </label>
-                      {!formData.idFrontImage ? (
-                        <div className="flex w-full items-center justify-center">
-                          <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
-                            <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                              <svg
-                                className="mb-4 size-8 text-gray-500"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 16"
-                              >
-                                <path
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                />
-                              </svg>
-                              <p className="mb-2 text-sm text-gray-500">
-                                <span className="font-semibold">Click to upload</span> or drag and drop
-                              </p>
-                              <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                            </div>
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept="image/*"
-                              onChange={(e) => handleFileChange(e, "idFrontImage")}
-                            />
-                          </label>
-                        </div>
-                      ) : null}
-                      {uploadingFiles.idFrontImage ? (
-                        <UploadProgress progress={uploadProgress.idFrontImage || 0} />
-                      ) : formData.idFrontImage ? (
-                        <UploadedFileDisplay
-                          fieldName="idFrontImage"
-                          fileName={formData.idFrontImage}
-                          previewUrl={formData.idFrontImagePreview}
-                          onDelete={() => handleFileDelete("idFrontImage")}
+                    {formData.idType === "nin" ? (
+                      <BasicFormInput
+                        label="NIN Number"
+                        type="text"
+                        name="idNumber"
+                        placeholder="Enter your NIN number"
+                        value={formData.idNumber}
+                        onChange={handleInputChange}
+                        required
+                        error={fieldErrors.idNumber}
+                      />
+                    ) : (
+                      <div>
+                        <BasicFormInput
+                          label="ID Number"
+                          type="text"
+                          name="idNumber"
+                          placeholder={`Enter your ${idTypeOptions
+                            .find((opt) => opt.value === formData.idType)
+                            ?.label.toLowerCase()} number`}
+                          value={formData.idNumber}
+                          onChange={handleInputChange}
+                          required
+                          error={fieldErrors.idNumber}
                         />
-                      ) : null}
-                      {fieldErrors.idFrontImage && (
-                        <p className="mt-1 text-xs text-red-600">Please upload your ID document</p>
-                      )}
-                    </div>
+
+                        {(formData.idType === "passport" || formData.idType === "driverLicense") && (
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
+                              Upload ID Document (Front) <span className="text-red-500">*</span>
+                            </label>
+                            {!formData.idFrontImage ? (
+                              <div className="flex w-full items-center justify-center">
+                                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
+                                  <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                                    <svg
+                                      className="mb-4 size-8 text-gray-500"
+                                      aria-hidden="true"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 20 16"
+                                    >
+                                      <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                      />
+                                    </svg>
+                                    <p className="mb-2 text-sm text-gray-500">
+                                      <span className="font-semibold">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                  </div>
+                                  <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(e, "idFrontImage")}
+                                  />
+                                </label>
+                              </div>
+                            ) : null}
+                            {uploadingFiles.idFrontImage ? (
+                              <UploadProgress progress={uploadProgress.idFrontImage || 0} />
+                            ) : formData.idFrontImage ? (
+                              <UploadedFileDisplay
+                                fieldName="idFrontImage"
+                                fileName={formData.idFrontImage}
+                                previewUrl={formData.idFrontImagePreview}
+                                onDelete={() => handleFileDelete("idFrontImage")}
+                              />
+                            ) : null}
+                            {fieldErrors.idFrontImage && (
+                              <p className="mt-1 text-xs text-red-600">Please upload your ID document</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div className={`flex items-center space-x-2 ${fieldErrors.acceptTerms ? "text-red-600" : ""}`}>
                       <input

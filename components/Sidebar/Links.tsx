@@ -54,7 +54,7 @@ const allLinks: LinkItem[] = [
     // requiredActions: ["R"],
   },
   {
-    name: "Wallet",
+    name: "Balance",
     href: "/wallet",
     icon: MessageIcon,
     // privilegeKey: "payments",

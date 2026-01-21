@@ -1,6 +1,9 @@
 "use client"
 import DashboardNav from "components/Navbar/DashboardNav"
 import WelcomeModal from "components/ui/Modal/welcome-modal"
+import StaticQrSetupModal from "components/ui/Modal/static-qr-setup-modal"
+import PaymentLinkSetupModal from "components/ui/Modal/payment-link-setup-modal"
+import WithdrawModal from "components/ui/Modal/withdraw-modal"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -14,6 +17,10 @@ export default function Dashboard() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("month")
   const [isLoading, setIsLoading] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
+  const [showStaticQrSetupModal, setShowStaticQrSetupModal] = useState(false)
+  const [showPaymentLinkSetupModal, setShowPaymentLinkSetupModal] = useState(false)
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false)
+  const [withdrawLoading, setWithdrawLoading] = useState(false)
   const router = useRouter()
 
   // Mock currencies data
@@ -80,6 +87,25 @@ export default function Dashboard() {
   const handleGetStarted = () => {
     setShowWelcomeModal(false)
     router.push("/account-setup")
+  }
+
+  const handleStaticQrGenerate = (data: any) => {
+    console.log("Static QR Data:", data)
+  }
+
+  const handlePaymentLinkGenerate = (data: any) => {
+    console.log("Payment Link Data:", data)
+  }
+
+  const handleWithdraw = async (amount: number) => {
+    setWithdrawLoading(true)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800))
+      console.log("Withdraw amount:", amount)
+      setShowWithdrawModal(false)
+    } finally {
+      setWithdrawLoading(false)
+    }
   }
 
   // Calculate derived metrics
@@ -354,7 +380,10 @@ export default function Dashboard() {
             <div className="mb-6">
               <h2 className="mb-4 text-lg font-semibold text-gray-900">Quick Actions</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+                <div
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50"
+                  onClick={() => setShowStaticQrSetupModal(true)}
+                >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
                       <svg className="size-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -373,7 +402,10 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+                <div
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50"
+                  onClick={() => setShowPaymentLinkSetupModal(true)}
+                >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
                       <svg className="size-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -392,7 +424,10 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50">
+                <div
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50"
+                  onClick={() => setShowWithdrawModal(true)}
+                >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
                       <svg className="size-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -559,6 +594,26 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      <StaticQrSetupModal
+        isOpen={showStaticQrSetupModal}
+        onRequestClose={() => setShowStaticQrSetupModal(false)}
+        onGenerateQr={handleStaticQrGenerate}
+      />
+
+      <PaymentLinkSetupModal
+        isOpen={showPaymentLinkSetupModal}
+        onRequestClose={() => setShowPaymentLinkSetupModal(false)}
+        onGenerateLink={handlePaymentLinkGenerate}
+      />
+
+      <WithdrawModal
+        isOpen={showWithdrawModal}
+        onRequestClose={() => setShowWithdrawModal(false)}
+        onWithdraw={handleWithdraw}
+        loading={withdrawLoading}
+        currentBalance={utilityData.availableBalance}
+      />
 
       {/* Welcome Modal */}
       <WelcomeModal
