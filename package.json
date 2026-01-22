@@ -32,7 +32,7 @@
     "@mui/icons-material": "^6.3.0",
     "@mui/material": "^6.3.0",
     "@mui/x-charts": "^7.23.2",
-    "@next/bundle-analyzer": "^14.2.3",
+    "@next/bundle-analyzer": "15.5.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -72,7 +72,7 @@
     "jspdf-autotable": "^5.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.511.0",
-    "next": "^16.2.0-canary.1",
+    "next": "15.5.2",
     "next-compose-plugins": "^2.2.1",
     "next-themes": "^0.4.4",
     "react": "^18.3.1",
@@ -125,7 +125,7 @@
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
     "eslint": "8.54.0",
-    "eslint-config-next": "14.0.3",
+    "eslint-config-next": "15.5.2",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.29.0",
@@ -150,7 +150,8 @@
     "tsc": "^2.0.4",
     "typescript": "5.4.5",
     "vercel": "47.0.4",
-    "webpack": "5.89.0"
+    "webpack": "5.89.0",
+    "wrangler": "^4"
   },
   "engines": {
     "node": ">=20.0.0"
