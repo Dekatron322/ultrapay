@@ -7,11 +7,11 @@ export const metadata: Metadata = {
   description: "Accept Crypto Like Cash. Without the Complexity",
   icons: {
     icon: [
-      { url: "/blumenx.png" },
-      { url: "/blumenx.png", sizes: "16x16", type: "image/png" },
-      { url: "/blumenx.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.svg" },
+      { url: "/icon.svg", sizes: "16x16", type: "image/png" },
+      { url: "/icon.svg", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/blumenx.png" }],
+    apple: [{ url: "/icon.svg" }],
     other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#5bbad5" }],
   },
   twitter: {

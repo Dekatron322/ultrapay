@@ -8,8 +8,10 @@ import Image from "next/image"
 import TransactionDetailsModal from "components/ui/Modal/transaction-details-modal"
 import WithdrawModal from "components/ui/Modal/withdraw-modal"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, ChevronDown, ChevronUp, Filter, SortAsc, SortDesc, X } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronUp, Filter, Grid, List, SortAsc, SortDesc, X } from "lucide-react"
 import { ButtonModule } from "components/ui/Button/Button"
+import InfoIcon from "public/info-icon"
+import { VscInfo } from "react-icons/vsc"
 
 // Time filter types
 type TimeFilter = "day" | "week" | "month" | "all"
@@ -554,6 +556,7 @@ export default function Dashboard() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("month")
   const [isLoading, setIsLoading] = useState(false)
   const [showActivities, setShowActivities] = useState(false)
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table")
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false)
@@ -1066,12 +1069,12 @@ export default function Dashboard() {
         <div className="flex w-full flex-col">
           <DashboardNav />
 
-          <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full flex-col px-4 py-4 2xl:container sm:px-4 lg:px-6 2xl:px-16">
             {/* Simplified Wallet Header for Mobile */}
             <div className="mb-6 lg:hidden">
               <div className="mb-4">
                 <h1 className="text-xl font-semibold text-gray-900">Welcome, John Ibra</h1>
-                <p className="text-sm text-gray-500">Customer Wallet</p>
+                <p className="text-sm text-gray-500">Balance</p>
               </div>
             </div>
 
@@ -1095,21 +1098,22 @@ export default function Dashboard() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900 sm:text-lg">Customer Wallet</h3>
-                    <p className="hidden text-sm text-gray-500 sm:block">
-                      Manage your account balance and transactions
-                    </p>
+                    <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900 sm:text-lg">
+                      Balance
+                      <VscInfo />
+                    </h3>
+                    <p className="hidden text-sm text-gray-500 sm:block">Manage your fiat balance and withdrawals</p>
                     <p className="text-xs text-gray-500 sm:hidden">Balance & Transactions</p>
                   </div>
                 </div>
-                <ButtonModule
+                {/* <ButtonModule
                   size="sm"
                   variant="primary"
                   onClick={() => setWithdrawModalOpen(true)}
                   className="sm:size-md"
                 >
                   Withdraw Fund
-                </ButtonModule>
+                </ButtonModule> */}
               </div>
 
               {/* Balance Display - Mobile Optimized */}
@@ -1349,6 +1353,27 @@ export default function Dashboard() {
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-base font-semibold text-gray-900 sm:text-lg">Recent Activities</h2>
                 <div className="flex items-center gap-2">
+                  {/* View Toggle */}
+                  <div className="flex items-center rounded-lg border border-gray-300 bg-white p-1">
+                    <button
+                      onClick={() => setViewMode("table")}
+                      className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm ${
+                        viewMode === "table" ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      <List className="size-3 sm:size-4" />
+                      <span className="hidden sm:inline">Table</span>
+                    </button>
+                    <button
+                      onClick={() => setViewMode("grid")}
+                      className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm ${
+                        viewMode === "grid" ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      <Grid className="size-3 sm:size-4" />
+                      <span className="hidden sm:inline">Grid</span>
+                    </button>
+                  </div>
                   {/* Mobile Filter Button */}
                   <button
                     onClick={() => setShowMobileFilters(true)}
@@ -1391,26 +1416,47 @@ export default function Dashboard() {
                       </button>
                     </div>
                   </div>
-                ) : (
-                  // Transaction State - Mobile List View
-                  <div className="divide-y divide-gray-200">
-                    {filteredTransactions.map((transaction) => (
-                      <div key={transaction.id} className="p-4 hover:bg-gray-50 sm:p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              {getAssetIcon(transaction.assetPaid)}
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">{transaction.reference}</div>
-                                <div className="mt-1 flex items-center gap-2">
-                                  {getPaymentSourceIcon(transaction.paymentSource)}
-                                  <span className="text-xs text-gray-500">{transaction.paymentSource}</span>
+                ) : // Transaction State - Table or Grid View
+                viewMode === "table" ? (
+                  // Table View
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="border-b border-gray-200 bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 sm:px-6">
+                            Transaction
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 sm:px-6">
+                            Amount
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 sm:px-6">
+                            Date
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 sm:px-6">
+                            Status
+                          </th>
+                          <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 sm:px-6">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 bg-white">
+                        {filteredTransactions.map((transaction) => (
+                          <tr key={transaction.id} className="hover:bg-gray-50">
+                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
+                              <div className="flex items-center gap-3">
+                                {getAssetIcon(transaction.assetPaid)}
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{transaction.reference}</div>
+                                  <div className="mt-1 flex items-center gap-2">
+                                    {getPaymentSourceIcon(transaction.paymentSource)}
+                                    <span className="text-xs text-gray-500">{transaction.paymentSource}</span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="mt-3 grid grid-cols-2 gap-2">
+                            </td>
+                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
                               <div>
-                                <p className="text-xs text-gray-500">Amount</p>
                                 <p className="text-sm font-medium text-gray-900">
                                   {selectedCurrencySymbol}
                                   {transaction.amount.toLocaleString()}
@@ -1419,31 +1465,90 @@ export default function Dashboard() {
                                   {transaction.assetQuantity} {transaction.assetPaid}
                                 </p>
                               </div>
-                              <div>
-                                <p className="text-xs text-gray-500">Date</p>
-                                <p className="text-sm font-medium text-gray-900">{formatDate(transaction.date)}</p>
+                            </td>
+                            <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
+                              {formatDate(transaction.date)}
+                            </td>
+                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
+                              <span
+                                className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${getStatusColor(
+                                  transaction.status
+                                )}`}
+                              >
+                                <div
+                                  className={`mr-1 size-2 rounded-full ${getStatusDotColor(transaction.status)}`}
+                                ></div>
+                                {transaction.status}
+                              </span>
+                            </td>
+                            <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium sm:px-6">
+                              <button
+                                onClick={() => handleViewTransaction(transaction)}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  // Grid View (Proper Grid Layout)
+                  <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                    {filteredTransactions.map((transaction) => (
+                      <div
+                        key={transaction.id}
+                        className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                      >
+                        {/* Header */}
+                        <div className="mb-3 flex items-start justify-between">
+                          <div className="flex items-center gap-2">
+                            {getAssetIcon(transaction.assetPaid)}
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-sm font-medium text-gray-900">{transaction.reference}</div>
+                              <div className="mt-1 flex items-center gap-1">
+                                {getPaymentSourceIcon(transaction.paymentSource)}
+                                <span className="truncate text-xs text-gray-500">{transaction.paymentSource}</span>
                               </div>
                             </div>
                           </div>
-                          <div className="ml-4 flex flex-col items-end">
-                            <span
-                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${getStatusColor(
-                                transaction.status
-                              )}`}
-                            >
-                              <div
-                                className={`mr-1 size-2  rounded-full ${getStatusDotColor(transaction.status)}`}
-                              ></div>
-                              {transaction.status}
-                            </span>
-                            <button
-                              onClick={() => handleViewTransaction(transaction)}
-                              className="mt-2 text-xs text-blue-600 hover:text-blue-900 sm:text-sm"
-                            >
-                              View
-                            </button>
-                          </div>
+                          <span
+                            className={`inline-flex flex-shrink-0 items-center rounded-full px-2 py-1 text-xs ${getStatusColor(
+                              transaction.status
+                            )}`}
+                          >
+                            <div className={`mr-1 size-2 rounded-full ${getStatusDotColor(transaction.status)}`}></div>
+                            {transaction.status}
+                          </span>
                         </div>
+
+                        {/* Amount */}
+                        <div className="mb-3">
+                          <p className="mb-1 text-xs text-gray-500">Amount</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {selectedCurrencySymbol}
+                            {transaction.amount.toLocaleString()}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {transaction.assetQuantity} {transaction.assetPaid}
+                          </p>
+                        </div>
+
+                        {/* Date */}
+                        <div className="mb-3">
+                          <p className="mb-1 text-xs text-gray-500">Date</p>
+                          <p className="text-sm text-gray-900">{formatDate(transaction.date)}</p>
+                        </div>
+
+                        {/* Action Button */}
+                        <button
+                          onClick={() => handleViewTransaction(transaction)}
+                          className="w-full rounded-md border border-blue-600 bg-blue-50 px-3 py-2 text-center text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100 sm:text-sm"
+                        >
+                          View Details
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -1451,24 +1556,23 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Desktop Filters Sidebar (2xl and above) - Separate Container */}
-        <DesktopFiltersSidebar
-          showDesktopFilters={showDesktopFilters}
-          localFilters={localFilters}
-          handleFilterChange={handleFilterChange}
-          handleSortChange={handleSortChange}
-          applyFilters={applyFilters}
-          resetFilters={resetFilters}
-          getActiveFilterCount={getActiveFilterCount}
-          statusOptions={statusOptions}
-          paymentSourceOptions={paymentSourceOptions}
-          assetTypeOptions={assetTypeOptions}
-          sortOptions={sortOptions}
-          isSortExpanded={isSortExpanded}
-          setIsSortExpanded={setIsSortExpanded}
-        />
+          <DesktopFiltersSidebar
+            showDesktopFilters={showDesktopFilters}
+            localFilters={localFilters}
+            handleFilterChange={handleFilterChange}
+            handleSortChange={handleSortChange}
+            applyFilters={applyFilters}
+            resetFilters={resetFilters}
+            getActiveFilterCount={getActiveFilterCount}
+            statusOptions={statusOptions}
+            paymentSourceOptions={paymentSourceOptions}
+            assetTypeOptions={assetTypeOptions}
+            sortOptions={sortOptions}
+            isSortExpanded={isSortExpanded}
+            setIsSortExpanded={setIsSortExpanded}
+          />
+        </div>
       </div>
 
       {/* Mobile Filter Sidebar */}

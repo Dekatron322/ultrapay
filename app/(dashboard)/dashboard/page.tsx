@@ -4,17 +4,35 @@ import WelcomeModal from "components/ui/Modal/welcome-modal"
 import StaticQrSetupModal from "components/ui/Modal/static-qr-setup-modal"
 import PaymentLinkSetupModal from "components/ui/Modal/payment-link-setup-modal"
 import WithdrawModal from "components/ui/Modal/withdraw-modal"
+import { FormSelectModule } from "components/ui/Input/FormSelectModule"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { DateRange } from "react-date-range"
+import "react-date-range/dist/styles.css"
+import "react-date-range/dist/theme/default.css"
 
 // Time filter types
-type TimeFilter = "day" | "week" | "month" | "all"
+type TimeFilter = "today" | "this_week" | "this_month" | "this_year" | "all_time" | "custom"
+
+interface DateRangeType {
+  startDate: Date
+  endDate: Date
+  key: string
+}
 
 export default function Dashboard() {
   const [selectedCurrencyId, setSelectedCurrencyId] = useState<number>(1)
   const [selectedCurrencySymbol, setSelectedCurrencySymbol] = useState<string>("NGN")
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>("month")
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("today")
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [dateRange, setDateRange] = useState<DateRangeType[]>([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ])
   const [isLoading, setIsLoading] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(true)
   const [showStaticQrSetupModal, setShowStaticQrSetupModal] = useState(false)
@@ -34,7 +52,25 @@ export default function Dashboard() {
 
   // Generate random utility data based on time filter
   const generateUtilityData = () => {
-    const baseMultiplier = timeFilter === "day" ? 0.03 : timeFilter === "week" ? 0.2 : timeFilter === "month" ? 1 : 4
+    let baseMultiplier = 1
+
+    if (timeFilter === "today") {
+      baseMultiplier = 0.03
+    } else if (timeFilter === "this_week") {
+      baseMultiplier = 0.2
+    } else if (timeFilter === "this_month") {
+      baseMultiplier = 1
+    } else if (timeFilter === "this_year") {
+      baseMultiplier = 12
+    } else if (timeFilter === "all_time") {
+      baseMultiplier = 24
+    } else if (timeFilter === "custom") {
+      // Calculate multiplier based on custom date range
+      const daysDiff = Math.ceil(
+        ((dateRange[0]?.endDate?.getTime() || 0) - (dateRange[0]?.startDate?.getTime() || 0)) / (1000 * 60 * 60 * 24)
+      )
+      baseMultiplier = Math.max(0.03, daysDiff / 30) // Minimum 0.03, scale based on days
+    }
 
     return {
       // Customer metrics
@@ -116,6 +152,25 @@ export default function Dashboard() {
       ? "text-yellow-500"
       : "text-red-500"
 
+  const handleDateRangeSelect = () => {
+    setShowDatePicker(false)
+    setTimeFilter("custom")
+    setUtilityData(generateUtilityData())
+  }
+
+  const handleDateRangeChange = (ranges: any) => {
+    setDateRange([ranges.selection])
+  }
+
+  const formatDateRange = () => {
+    if (timeFilter === "custom" && dateRange[0]) {
+      const start = dateRange[0].startDate.toLocaleDateString()
+      const end = dateRange[0].endDate.toLocaleDateString()
+      return `${start} - ${end}`
+    }
+    return ""
+  }
+
   return (
     <section className="size-full">
       <div className="flex min-h-screen w-full bg-gradient-to-br from-[#F9FAFB] to-[#F9FAFB]">
@@ -129,6 +184,142 @@ export default function Dashboard() {
                 <p className="text-sm font-medium text-gray-500">
                   Monitor your payment activity, track settlement, and manage your account.
                 </p>
+              </div>
+
+              {/* Time Range Filter */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Time Range:</span>
+                <div className="w-32 sm:hidden">
+                  <FormSelectModule
+                    label=""
+                    name="timeFilter"
+                    value={timeFilter}
+                    onChange={(e) => {
+                      const value = e.target.value as TimeFilter
+                      if (value === "custom") {
+                        setShowDatePicker(true)
+                      } else {
+                        setTimeFilter(value)
+                      }
+                    }}
+                    options={[
+                      { value: "today", label: "Today" },
+                      { value: "this_week", label: "This Week" },
+                      { value: "this_month", label: "This Month" },
+                      { value: "this_year", label: "This Year" },
+                      { value: "all_time", label: "All Time" },
+                      { value: "custom", label: "Custom" },
+                    ]}
+                    size="sm"
+                  />
+                </div>
+                <div className="hidden rounded-lg border border-gray-200 bg-white p-1 sm:inline-flex">
+                  <button
+                    onClick={() => setTimeFilter("today")}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      timeFilter === "today" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Today
+                  </button>
+                  <button
+                    onClick={() => setTimeFilter("this_week")}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      timeFilter === "this_week" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    This Week
+                  </button>
+                  <button
+                    onClick={() => setTimeFilter("this_month")}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      timeFilter === "this_month" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    This Month
+                  </button>
+                  <button
+                    onClick={() => setTimeFilter("this_year")}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      timeFilter === "this_year" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    This Year
+                  </button>
+                  <button
+                    onClick={() => setTimeFilter("all_time")}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      timeFilter === "all_time" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    All Time
+                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowDatePicker(!showDatePicker)}
+                      className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                        timeFilter === "custom" ? "bg-blue-600 text-white" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      Custom
+                    </button>
+
+                    {/* Date Range Picker Dropdown */}
+                    {showDatePicker && (
+                      <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 sm:rounded-lg sm:border sm:border-gray-200 sm:bg-white sm:shadow-lg">
+                        <div className="w-full max-w-sm rounded-lg bg-white p-4 sm:max-w-none sm:border-0 sm:p-4">
+                          <div className="mb-3 flex items-center justify-between">
+                            <h3 className="text-sm font-medium text-gray-900">Select Date Range</h3>
+                            <button
+                              onClick={() => setShowDatePicker(false)}
+                              className="text-gray-400 hover:text-gray-600"
+                            >
+                              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+
+                          <DateRange
+                            ranges={dateRange}
+                            onChange={handleDateRangeChange}
+                            moveRangeOnFirstSelection={false}
+                            rangeColors={["#2563eb"]}
+                            className="custom-date-range"
+                          />
+
+                          <div className="mt-4 flex justify-end gap-2">
+                            <button
+                              onClick={() => setShowDatePicker(false)}
+                              className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={handleDateRangeSelect}
+                              className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="mt-5">

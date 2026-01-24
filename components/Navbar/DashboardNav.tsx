@@ -68,6 +68,12 @@ const DashboardNav = () => {
     }
   }, [])
 
+  const [userInitials, setUserInitials] = useState("A")
+  const [userDisplayName, setUserDisplayName] = useState("Admin User")
+  const [userAccountId, setUserAccountId] = useState("N/A")
+  const [userEmail, setUserEmail] = useState("")
+  const [mustChangePassword, setMustChangePassword] = useState(false)
+
   // Get user initials for avatar
   const getUserInitials = () => {
     const fullName = user?.fullName?.trim()
@@ -82,6 +88,15 @@ const DashboardNav = () => {
     }
     return user?.email?.charAt(0).toUpperCase() || "A"
   }
+
+  // Update user display data when user data changes
+  useEffect(() => {
+    setUserInitials(getUserInitials())
+    setUserDisplayName(user?.fullName || user?.email || "Admin User")
+    setUserAccountId(user?.accountId || "N/A")
+    setUserEmail(user?.email || "")
+    setMustChangePassword(user?.mustChangePassword || false)
+  }, [user])
 
   // Get primary role name
   const getPrimaryRole = () => {
@@ -169,7 +184,7 @@ const DashboardNav = () => {
   return (
     <>
       <nav className="containerbg sticky top-0 z-50 hidden w-full border-b bg-[#FFFFFF] md:block">
-        <div className="flexBetween container mx-auto px-16 py-2 max-sm:px-3">
+        <div className="flexBetween mx-auto flex w-full px-3 py-2 2xl:container max-sm:px-3 md:px-4 lg:px-6 2xl:px-16">
           <SearchModule
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -201,12 +216,10 @@ const DashboardNav = () => {
                 className="flex items-center gap-3 rounded-lg bg-[#EEF6FF] px-3 py-2 transition-colors hover:bg-[#EEF6FF]"
               >
                 <div className="flex size-8 items-center justify-center rounded-full bg-[#1447E6] font-medium text-white">
-                  {getUserInitials()}
+                  {userInitials}
                 </div>
                 <div className="flex flex-col items-start">
-                  <span className="text-sm font-medium text-gray-900">
-                    {user?.fullName || user?.email || "Admin User"}
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">{userDisplayName}</span>
                   <span className="text-xs text-gray-500">{getPrimaryRole()}</span>
                 </div>
                 <ChevronDown
@@ -219,10 +232,10 @@ const DashboardNav = () => {
                   <div className="pt-1">
                     {/* User Info Section */}
                     <div className="overflow-hidden border-b border-gray-100 px-4 py-3">
-                      <p className="text-sm font-medium text-gray-900">{user?.fullName || "Admin User"}</p>
-                      <p className="text-sm text-gray-500">{user?.email}</p>
-                      <p className="mt-1 text-xs text-gray-400">Account ID: {user?.accountId || "N/A"}</p>
-                      {user?.mustChangePassword && (
+                      <p className="text-sm font-medium text-gray-900">{userDisplayName}</p>
+                      <p className="text-sm text-gray-500">{userEmail}</p>
+                      <p className="mt-1 text-xs text-gray-400">Account ID: {userAccountId}</p>
+                      {mustChangePassword && (
                         <div className="mt-2 rounded bg-yellow-50 px-2 py-1">
                           <p className="text-xs text-yellow-700">Password change required</p>
                         </div>
@@ -268,7 +281,7 @@ const DashboardNav = () => {
             {/* Mobile User Info */}
             <div className="flex items-center gap-2">
               <div className="flex size-8 items-center justify-center rounded-full bg-[#1447E6] text-sm font-medium text-white">
-                {getUserInitials()}
+                {userInitials}
               </div>
             </div>
             <FormatAlignLeftIcon onClick={toggleNav} style={{ cursor: "pointer" }} />
@@ -284,10 +297,10 @@ const DashboardNav = () => {
           <div className="flex items-center justify-between border-b p-4">
             <div className="flex items-center gap-3">
               <div className="flex size-8 items-center justify-center rounded-full bg-[#1447E6] text-sm font-medium text-white">
-                {getUserInitials()}
+                {userInitials}
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">{user?.fullName || "Admin User"}</p>
+                <p className="text-sm font-medium text-gray-900">{userDisplayName}</p>
                 <p className="text-xs text-gray-500">{getPrimaryRole()}</p>
               </div>
             </div>
