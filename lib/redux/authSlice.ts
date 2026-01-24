@@ -100,6 +100,9 @@ export const api = axios.create({
 
 // Helper functions for localStorage
 const loadAuthState = (): Partial<AuthState> | undefined => {
+  if (typeof window === "undefined") {
+    return undefined
+  }
   try {
     const serializedState = localStorage.getItem("authState")
     if (serializedState === null) {
@@ -113,6 +116,9 @@ const loadAuthState = (): Partial<AuthState> | undefined => {
 }
 
 const saveAuthState = (state: AuthState) => {
+  if (typeof window === "undefined") {
+    return
+  }
   try {
     const serializedState = JSON.stringify({
       user: state.user,
@@ -127,6 +133,9 @@ const saveAuthState = (state: AuthState) => {
 }
 
 const clearAuthState = () => {
+  if (typeof window === "undefined") {
+    return
+  }
   try {
     localStorage.removeItem("authState")
   } catch (err) {

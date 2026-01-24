@@ -160,7 +160,7 @@ export const adminApi = createApi({
 
       if (accessToken) {
         headers.set("Authorization", `Bearer ${accessToken}`)
-      } else {
+      } else if (typeof window !== "undefined") {
         const storedAuth = localStorage.getItem("authState")
         if (storedAuth) {
           const parsedAuth = JSON.parse(storedAuth) as { tokens?: { accessToken?: string } }

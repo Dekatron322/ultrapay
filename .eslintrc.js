@@ -5,12 +5,12 @@ module.exports = {
   extends: [
     "next",
     "prettier",
-    "react-app",
-    "react-app/jest",
+    "@typescript-eslint/recommended",
     "plugin:storybook/recommended",
     "plugin:tailwindcss/recommended",
   ],
   parserOptions: {
+    parser: "@typescript-eslint/parser",
     babelOptions: {
       presets: [require.resolve("next/babel")],
     },
