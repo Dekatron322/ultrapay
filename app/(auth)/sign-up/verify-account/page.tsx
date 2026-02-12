@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { Suspense, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
@@ -12,7 +12,7 @@ import { verifyEmail, clearEmailVerificationStatus, resendOtp, clearResendOtpSta
 import { notify } from "components/ui/Notification/Notification"
 import type { AppDispatch, RootState } from "lib/redux/store"
 
-const OtpPage: React.FC = () => {
+const OtpPageContent: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
   const [counter, setCounter] = useState<number>(60)
   const [canResend, setCanResend] = useState<boolean>(false)
@@ -395,6 +395,14 @@ const OtpPage: React.FC = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+const OtpPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OtpPageContent />
+    </Suspense>
   )
 }
 

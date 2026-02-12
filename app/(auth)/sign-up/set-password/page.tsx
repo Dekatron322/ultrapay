@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PasswordInputModule } from "components/ui/Input/PasswordInput"
@@ -21,7 +21,7 @@ interface Testimonial {
   company: string
 }
 
-const SetPassword: React.FC = () => {
+const SetPasswordContent: React.FC = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const dispatch = useDispatch<AppDispatch>()
@@ -451,6 +451,14 @@ const SetPassword: React.FC = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+const SetPassword: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SetPasswordContent />
+    </Suspense>
   )
 }
 
