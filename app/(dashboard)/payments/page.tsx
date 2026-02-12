@@ -643,28 +643,28 @@ const PaymentTable = ({
       case "Active":
         return (
           <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-green-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-green-600"></div>
             Active
           </span>
         )
       case "Completed":
         return (
           <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-blue-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-blue-600"></div>
             Completed
           </span>
         )
       case "Awaiting":
         return (
           <span className="inline-flex items-center rounded-full bg-yellow-50 px-2.5 py-1 text-xs font-medium text-yellow-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-yellow-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-yellow-600"></div>
             Awaiting
           </span>
         )
       default:
         return (
           <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-gray-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-gray-600"></div>
             Unknown
           </span>
         )
@@ -1378,7 +1378,7 @@ export default function Dashboard() {
                   {/* Total Payments */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100">
                         <svg className="size-5  text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1415,7 +1415,7 @@ export default function Dashboard() {
                   {/* Active Payments */}
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-green-100">
                         <svg className="size-5  text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1454,7 +1454,7 @@ export default function Dashboard() {
                   {/* Total Received */}
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b  max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-purple-100">
                         <svg className="size-5  text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1498,7 +1498,7 @@ export default function Dashboard() {
                   {/* Successful Transactions */}
                   <div className="pr-6 last:pr-0 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-orange-100">
                         <svg className="size-5  text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"

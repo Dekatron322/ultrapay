@@ -2,20 +2,45 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ButtonModule } from "components/ui/Button/Button"
 import { AnimatePresence, motion } from "framer-motion"
 import { VscArrowLeft } from "react-icons/vsc"
 import Image from "next/image"
+import { useDispatch, useSelector } from "react-redux"
+import { verifyEmail, clearEmailVerificationStatus, resendOtp, clearResendOtpStatus } from "lib/redux/authSlice"
+import { notify } from "components/ui/Notification/Notification"
+import type { AppDispatch, RootState } from "lib/redux/store"
 
 const OtpPage: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [counter, setCounter] = useState<number>(60)
   const [canResend, setCanResend] = useState<boolean>(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
+
+  const dispatch = useDispatch<AppDispatch>()
+  const {
+    isVerifyingEmail,
+    emailVerificationError,
+    emailVerificationSuccess,
+    isResendingOtp,
+    resendOtpError,
+    resendOtpSuccess,
+  } = useSelector((state: RootState) => state.auth)
+
+  // Get email from URL parameters
+  const email = searchParams.get("email") || ""
+  const isAlreadyVerified = searchParams.get("verified") === "true"
+
+  useEffect(() => {
+    // Check if email is already verified or if verification just succeeded
+    if (isAlreadyVerified || emailVerificationSuccess) {
+      // Redirect to set-password page if email is already verified or verification succeeded
+      router.push(`/sign-up/set-password?email=${encodeURIComponent(email)}`)
+    }
+  }, [emailVerificationSuccess, router, email, isAlreadyVerified])
 
   useEffect(() => {
     if (counter <= 0) {
@@ -30,38 +55,53 @@ const OtpPage: React.FC = () => {
   }, [counter])
 
   useEffect(() => {
-    // Focus on the first input box when component mounts
-    if (inputRefs.current[0]) {
-      inputRefs.current[0].focus()
+    // Clear verification status when component unmounts
+    return () => {
+      dispatch(clearEmailVerificationStatus())
+      dispatch(clearResendOtpStatus())
     }
-  }, [])
+  }, [dispatch])
+
+  useEffect(() => {
+    // Show success notification when OTP is resent
+    if (resendOtpSuccess) {
+      notify("success", "OTP has been resent to your email address.", {
+        title: "Success",
+        description: "Please check your email for the new verification code.",
+      })
+    }
+  }, [resendOtpSuccess])
 
   const handleResend = () => {
-    if (!canResend) return
+    if (!canResend || !email) return
     setOtp(Array(6).fill(""))
-    setError(null)
+    dispatch(clearEmailVerificationStatus())
+    dispatch(clearResendOtpStatus())
+
+    // Dispatch resend OTP action
+    dispatch(resendOtp({ email }))
+
     setCounter(60)
     setCanResend(false)
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoading(true)
-    setError(null)
+    dispatch(clearEmailVerificationStatus())
 
     // Basic validation
     const code = otp.join("")
     if (code.length !== 6 || otp.some((d) => d.trim() === "")) {
-      setError("Please enter the 6-digit code")
-      setLoading(false)
       return
     }
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false)
-      // Redirect to set-password page
-      router.push("/sign-up/set-password")
-    }, 1500)
+
+    // Dispatch email verification action
+    dispatch(
+      verifyEmail({
+        email: email,
+        otp: code,
+      })
+    )
   }
 
   const focusInput = (index: number) => {
@@ -70,7 +110,7 @@ const OtpPage: React.FC = () => {
   }
 
   const handleChange = (index: number, value: string) => {
-    if (error) setError(null)
+    if (emailVerificationError) dispatch(clearEmailVerificationStatus())
     // Allow only digits
     const v = value.replace(/\D/g, "")
     if (v.length === 0) {
@@ -129,9 +169,13 @@ const OtpPage: React.FC = () => {
     if (lastIndex >= 0) focusInput(lastIndex)
   }
 
-  const isButtonDisabled = loading || otp.some((d) => d.trim() === "")
-  const minutes = Math.floor(counter / 60)
-  const seconds = counter % 60
+  useEffect(() => {
+    // Focus on the first input box when component mounts
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus()
+    }
+  }, [])
+  const isButtonDisabled = isVerifyingEmail || otp.some((d) => d.trim() === "")
 
   return (
     <div className="relative flex min-h-screen grid-cols-1 bg-gradient-to-br from-[#ffffff]">
@@ -177,7 +221,8 @@ const OtpPage: React.FC = () => {
                 <h1 className="text-2xl font-bold text-[#1447E6] md:text-3xl">Verify your email address</h1>
                 <p className="mt-1 text-[#101836] sm:mt-2">
                   Enter the security code sent to{" "}
-                  <span className="font-medium text-[#1447E6]">bmastudio@ultrapay.com</span>. to secure your account.
+                  <span className="font-medium text-[#1447E6]">{email || "your email address"}</span>. to secure your
+                  account.
                 </p>
               </div>
 
@@ -210,13 +255,50 @@ const OtpPage: React.FC = () => {
                   </div>
                 </motion.div>
 
-                {error && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  className="text-center"
+                >
+                  <p className="text-sm text-[#101836]">
+                    Didn't receive the code?{" "}
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={!canResend || isResendingOtp}
+                      className={`font-medium transition-colors ${
+                        canResend && !isResendingOtp
+                          ? "text-[#1447E6] hover:text-[#100A55]"
+                          : "cursor-not-allowed text-gray-400"
+                      }`}
+                    >
+                      {isResendingOtp
+                        ? "Sending..."
+                        : canResend
+                        ? "Resend"
+                        : `Resend in ${Math.floor(counter / 60)}:${(counter % 60).toString().padStart(2, "0")}`}
+                    </button>
+                  </p>
+                </motion.div>
+
+                {emailVerificationError && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="rounded-md bg-red-50 p-3 text-sm text-red-600"
                   >
-                    {error}
+                    {emailVerificationError}
+                  </motion.div>
+                )}
+
+                {resendOtpError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-md bg-red-50 p-3 text-sm text-red-600"
+                  >
+                    {resendOtpError}
                   </motion.div>
                 )}
 
@@ -228,36 +310,12 @@ const OtpPage: React.FC = () => {
                   <ButtonModule
                     type="submit"
                     variant="primary"
-                    size="lg"
+                    loading={isVerifyingEmail}
                     disabled={isButtonDisabled}
-                    loading={loading}
-                    className="w-full transform py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-                    whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
-                    whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
+                    className="w-full"
                   >
-                    Verify Account
+                    {isVerifyingEmail ? "Verifying..." : "Verify Email"}
                   </ButtonModule>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-[#101836]">
-                    Didn&apos;t receive the code?{" "}
-                    <button
-                      type="button"
-                      onClick={handleResend}
-                      disabled={!canResend}
-                      className={`font-medium transition-all duration-200 ease-in-out ${
-                        canResend ? "text-[#1447E6] underline hover:text-[#100A55]" : "cursor-not-allowed text-gray-400"
-                      }`}
-                    >
-                      {canResend ? "Resend" : `Resend (${minutes}:${seconds.toString().padStart(2, "0")})`}
-                    </button>
-                  </p>
                 </motion.div>
               </form>
             </motion.div>

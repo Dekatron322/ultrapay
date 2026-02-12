@@ -5,6 +5,7 @@ import employeeReducer from "./employeeSlice"
 import roleReducer from "./roleSlice"
 import areaOfficeReducer from "./areaOfficeSlice"
 import departmentReducer from "./departmentSlice"
+import systemsReducer from "./systemsSlice"
 import { adminApi } from "./adminSlice"
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     roles: roleReducer,
     areaOffices: areaOfficeReducer,
     departments: departmentReducer,
+    systems: systemsReducer,
     [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(adminApi.middleware),

@@ -311,7 +311,7 @@ const DashboardNav = () => {
             <Link
               href="/dashboard"
               onClick={toggleNav}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ${
+              className={`flex w-full items-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ${
                 pathname === "/dashboard" ? "bg-[#e9f0ff] text-[#003F9F]" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -322,7 +322,7 @@ const DashboardNav = () => {
             <Link
               href="/payments"
               onClick={toggleNav}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ${
+              className={`flex w-full items-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ${
                 pathname === "/payments" ? "bg-[#e9f0ff] text-[#003F9F]" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -333,7 +333,7 @@ const DashboardNav = () => {
             <Link
               href="/transactions"
               onClick={toggleNav}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ${
+              className={`flex w-full items-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ${
                 pathname === "/transactions" ? "bg-[#e9f0ff] text-[#003F9F]" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -344,7 +344,7 @@ const DashboardNav = () => {
             <Link
               href="/wallet"
               onClick={toggleNav}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-300 ${
+              className={`flex w-full items-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ${
                 pathname === "/wallet" ? "bg-[#e9f0ff] text-[#003F9F]" : "text-gray-600 hover:bg-gray-100"
               }`}
             >

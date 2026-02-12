@@ -3,8 +3,8 @@ type Environment = "STAGING" | "PRODUCTION"
 
 export const API_CONFIG = {
   // Environment-based base URLs
-  STAGING: "https://blumenos-e0fba1f74776.herokuapp.com",
-  PRODUCTION: "https://blumenos-e0fba1f74776.herokuapp.com",
+  STAGING: "https://ultrapayfinance-e003ed291433.herokuapp.com",
+  PRODUCTION: "https://ultrapayfinance-e003ed291433.herokuapp.com",
 
   // Current environment (change this to switch between staging/production)
   CURRENT_ENV: (process.env.NODE_ENV === "production" ? "PRODUCTION" : "STAGING") as Environment,
@@ -18,7 +18,12 @@ export const API_CONFIG = {
 export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
-    LOGIN: "/identity/auth/login",
+    REGISTER_AS_BUSINESS: "/Merchant/Register",
+    REGISTER_AS_PROFESSIONAL: "/Merchant/RegisterProfessional",
+    VERIFY_ACCOUNT: "/Merchant/VerifyEmailOtp",
+    RESEND_OTP: "/Merchant/RequestEmailOtp",
+    SET_PASSWORD: "/Merchant/SetPassword",
+    LOGIN: "/Merchant/Login",
     REFRESH_TOKEN: "/identity/auth/refresh",
     CHANGE_PASSWORD: "/identity/auth/change-password",
   },
@@ -43,6 +48,10 @@ export const API_ENDPOINTS = {
 
   ROLES: {
     GET: "/roles-management/roles",
+  },
+
+  SYSTEMS: {
+    GET: "/System/Countries",
   },
 
   AREA_OFFICE: {

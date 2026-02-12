@@ -9,4 +9,5 @@ export const loginSchema = z.object({
     .regex(/[A-Z]/, "Must contain at least one uppercase letter")
     .regex(/[0-9]/, "Must contain at least one number")
     .regex(/[^A-Za-z0-9]/, "Must contain at least one special character"),
+  appId: z.string().min(1, "App ID is required"),
 })

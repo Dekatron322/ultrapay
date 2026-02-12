@@ -577,7 +577,7 @@ const AccountSetup: React.FC = () => {
               className="flex-shrink-0 rounded-full p-1 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
               title="Delete file"
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -706,7 +706,7 @@ const AccountSetup: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
-                          className={`flex h-11 w-32 items-center justify-between rounded-l-lg border bg-[#F9FAFB] px-3 py-3 text-sm focus:border-[#1447E6] focus:outline-none focus:ring-1 focus:ring-[#1447E6] ${
+                          className={`flex h-11 w-32 items-center justify-between rounded-l-lg border bg-[#F9FAFB] p-3 text-sm focus:border-[#1447E6] focus:outline-none focus:ring-1 focus:ring-[#1447E6] ${
                             fieldErrors.country ? "border-red-500" : "border-gray-300"
                           }`}
                         >

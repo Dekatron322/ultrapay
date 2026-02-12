@@ -8,6 +8,11 @@ import { FormInputModule as EmailInput } from "components/ui/Input/EmailInput"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
 import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
+import { useDispatch, useSelector } from "react-redux"
+import { registerProfessional, clearProfessionalRegistrationStatus } from "lib/redux/authSlice"
+import { fetchCountries } from "lib/redux/systemsSlice"
+import { notify } from "components/ui/Notification/Notification"
+import type { AppDispatch, RootState } from "lib/redux/store"
 
 interface Testimonial {
   id: number
@@ -18,15 +23,57 @@ interface Testimonial {
   company: string
 }
 
-const SignUp: React.FC = () => {
+const ProfessionalSignUp: React.FC = () => {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const auth = useSelector((state: RootState) => state.auth)
+  const systems = useSelector((state: RootState) => state.systems)
+  const { isRegisteringProfessional, professionalRegistrationError, professionalRegistrationSuccess } = auth
+
   const [email, setEmail] = useState("")
-  const [businessName, setBusinessName] = useState("")
+  const [displayName, setDisplayName] = useState("")
+  const [profession, setProfession] = useState("")
+  const [customProfession, setCustomProfession] = useState("")
   const [country, setCountry] = useState("")
-  const [countryError, setCountryError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [errorNotified, setErrorNotified] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+
+  const professionOptions = [
+    { value: "", label: "Select your profession" },
+    { value: "Software Developer", label: "Software Developer" },
+    { value: "Doctor", label: "Doctor" },
+    { value: "Lawyer", label: "Lawyer" },
+    { value: "Engineer", label: "Engineer" },
+    { value: "Architect", label: "Architect" },
+    { value: "Accountant", label: "Accountant" },
+    { value: "Teacher", label: "Teacher" },
+    { value: "Nurse", label: "Nurse" },
+    { value: "Pharmacist", label: "Pharmacist" },
+    { value: "Dentist", label: "Dentist" },
+    { value: "Veterinarian", label: "Veterinarian" },
+    { value: "Psychologist", label: "Psychologist" },
+    { value: "Consultant", label: "Consultant" },
+    { value: "Manager", label: "Manager" },
+    { value: "Designer", label: "Designer" },
+    { value: "Writer", label: "Writer" },
+    { value: "Journalist", label: "Journalist" },
+    { value: "Photographer", label: "Photographer" },
+    { value: "Chef", label: "Chef" },
+    { value: "Electrician", label: "Electrician" },
+    { value: "Plumber", label: "Plumber" },
+    { value: "Mechanic", label: "Mechanic" },
+    { value: "Real Estate Agent", label: "Real Estate Agent" },
+    { value: "Financial Advisor", label: "Financial Advisor" },
+    { value: "Insurance Agent", label: "Insurance Agent" },
+    { value: "Marketing Specialist", label: "Marketing Specialist" },
+    { value: "Human Resources", label: "Human Resources" },
+    { value: "Data Scientist", label: "Data Scientist" },
+    { value: "Project Manager", label: "Project Manager" },
+    { value: "Business Owner", label: "Business Owner" },
+    { value: "Entrepreneur", label: "Entrepreneur" },
+    { value: "Freelancer", label: "Freelancer" },
+    { value: "Other", label: "Other" },
+  ]
 
   const testimonials: Testimonial[] = [
     {
@@ -58,6 +105,46 @@ const SignUp: React.FC = () => {
     },
   ]
 
+  // Fetch countries on component mount
+  useEffect(() => {
+    dispatch(fetchCountries())
+  }, [dispatch])
+
+  // Show notifications for professional registration errors only
+  useEffect(() => {
+    if (professionalRegistrationError && !errorNotified) {
+      notify("error", "Registration failed", {
+        title: "Error",
+        description: professionalRegistrationError,
+      })
+      setErrorNotified(true)
+    }
+    // Reset flag when error is cleared
+    if (!professionalRegistrationError && errorNotified) {
+      setErrorNotified(false)
+    }
+  }, [professionalRegistrationError, errorNotified])
+
+  // Clear status when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
+  }, [dispatch])
+
+  // Show success notification and redirect on successful registration
+  useEffect(() => {
+    if (professionalRegistrationSuccess) {
+      notify("success", "Professional registration successful!", {
+        title: "Registration Successful",
+        description: "Your professional account has been created. Redirecting to verification...",
+      })
+      setTimeout(() => {
+        router.push(`/sign-up/verify-account?email=${encodeURIComponent(email.trim())}`)
+      }, 2000)
+    }
+  }, [professionalRegistrationSuccess, router, email])
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
@@ -68,54 +155,109 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoading(true)
-    setError(null)
-    setCountryError("")
+    dispatch(clearProfessionalRegistrationStatus())
 
     // Country validation
     if (!country.trim()) {
-      setCountryError("Please select a country")
-      setLoading(false)
       return
     }
 
     // Basic validation
-    if (!email.trim() || !businessName.trim()) {
-      setError("Please enter all required fields")
-      setLoading(false)
+    const actualProfession = profession === "Other" ? customProfession : profession
+    if (!email.trim() || !displayName.trim() || !actualProfession.trim()) {
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false)
-      // Redirect to verify account page
-      router.push("/sign-up/verify-account")
-    }, 1500)
+    // Use the actual country ID from the API response
+    const professionalData = {
+      countryId: parseInt(country) || 0,
+      displayName: displayName.trim(),
+      profession: actualProfession.trim(),
+      email: email.trim(),
+    }
+
+    try {
+      const result = await dispatch(registerProfessional(professionalData))
+      if (registerProfessional.fulfilled.match(result)) {
+        // Registration successful, check if email is already verified
+        if (result.payload.data?.isVerified) {
+          // Email already verified, redirect directly to set-password
+          notify("success", "Email already verified!", {
+            title: "Registration Successful",
+            description: "Your email is already verified. Redirecting to set password...",
+          })
+          setTimeout(() => {
+            router.push(`/sign-up/set-password?email=${encodeURIComponent(email.trim())}&verified=true`)
+          }, 1500)
+        }
+        // If not already verified, the success useEffect will handle the redirect
+      }
+    } catch (error) {
+      // Error is handled by Redux state and useEffect above
+      console.error("Professional registration failed:", error)
+    }
   }
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
     // Clear error when user starts typing
-    if (error) setError(null)
+    if (professionalRegistrationError) {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
   }
 
-  const handleBusinessNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBusinessName(event.target.value)
+  const handleDisplayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplayName(event.target.value)
     // Clear error when user starts typing
-    if (error) setError(null)
+    if (professionalRegistrationError) {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
+  }
+
+  const handleCustomProfessionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomProfession(event.target.value)
+    // Clear error when user starts typing
+    if (professionalRegistrationError) {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
+  }
+
+  const handleProfessionChange = (
+    event: React.ChangeEvent<HTMLSelectElement> | { target: { name: string; value: string | number } }
+  ) => {
+    setProfession(event.target.value as string)
+    // Clear error when user starts typing
+    if (professionalRegistrationError) {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
   }
 
   const handleCountryChange = (
     event: React.ChangeEvent<HTMLSelectElement> | { target: { name: string; value: string | number } }
   ) => {
     setCountry(event.target.value as string)
-    setCountryError("")
     // Clear error when user starts typing
-    if (error) setError(null)
+    if (professionalRegistrationError) {
+      dispatch(clearProfessionalRegistrationStatus())
+    }
   }
 
-  const isButtonDisabled = loading || email.trim() === "" || businessName.trim() === "" || country.trim() === ""
+  const isButtonDisabled =
+    isRegisteringProfessional ||
+    email.trim() === "" ||
+    displayName.trim() === "" ||
+    (profession === "Other" ? customProfession.trim() === "" : profession.trim() === "") ||
+    country.trim() === ""
+
+  const countryOptions = [
+    { value: "", label: "Select a country" },
+    ...systems.countries.map((country) => ({
+      value: country.id.toString(),
+      label: `${country.name} (${country.currency.ticker} ${country.currency.symbol})`,
+      icon: country.currency.avatar,
+      iconType: "svg" as const,
+    })),
+  ]
 
   // Get current testimonial safely
   const currentTestimonialData = testimonials[currentTestimonial]
@@ -161,13 +303,8 @@ const SignUp: React.FC = () => {
                     name="country"
                     value={country}
                     onChange={handleCountryChange}
-                    error={countryError}
-                    options={[
-                      { value: "", label: "Select a country" },
-                      { value: "NG", label: "Nigeria", icon: "/ultra-pay/NG.svg", iconType: "svg" },
-                      { value: "GH", label: "Ghana", icon: "/ultra-pay/GH.svg", iconType: "svg" },
-                      { value: "KE", label: "Kenya", icon: "/ultra-pay/KE.svg", iconType: "svg" },
-                    ]}
+                    options={countryOptions}
+                    loading={systems.loading}
                     required
                   />
                 </motion.div>
@@ -178,12 +315,12 @@ const SignUp: React.FC = () => {
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
                   <FormInputModule
-                    label="Business Name"
+                    label="Display Name"
                     type="text"
-                    name="business-name"
-                    placeholder="Your business name"
-                    value={businessName}
-                    onChange={handleBusinessNameChange}
+                    name="display-name"
+                    placeholder="Your professional name"
+                    value={displayName}
+                    onChange={handleDisplayNameChange}
                     required
                   />
                 </motion.div>
@@ -192,6 +329,40 @@ const SignUp: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  <FormSelectModule
+                    label="Profession"
+                    name="profession"
+                    value={profession}
+                    onChange={handleProfessionChange}
+                    options={professionOptions}
+                    required
+                  />
+                </motion.div>
+
+                {profession === "Other" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FormInputModule
+                      label="Please specify your profession"
+                      type="text"
+                      name="custom-profession"
+                      placeholder="Enter your profession"
+                      value={customProfession}
+                      onChange={handleCustomProfessionChange}
+                      required
+                    />
+                  </motion.div>
+                )}
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
                 >
                   <EmailInput
                     label="Email Address"
@@ -207,7 +378,7 @@ const SignUp: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.7 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
                   className=" flex items-center justify-between"
                 >
                   <div className="flex items-center md:mt-6">
@@ -230,32 +401,32 @@ const SignUp: React.FC = () => {
                   </div>
                 </motion.div>
 
-                {error && (
+                {professionalRegistrationError && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="rounded-md bg-red-50 p-3 text-sm text-red-600"
                   >
-                    {error}
+                    {professionalRegistrationError}
                   </motion.div>
                 )}
 
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
+                  transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <ButtonModule
                     type="submit"
                     variant="primary"
                     size="lg"
                     disabled={isButtonDisabled}
-                    loading={loading}
+                    loading={isRegisteringProfessional}
                     className="w-full transform  py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                     whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
                     whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
                   >
-                    Continue
+                    {isRegisteringProfessional ? "Creating Account..." : "Create Account"}
                   </ButtonModule>
                 </motion.div>
               </form>
@@ -354,4 +525,4 @@ const SignUp: React.FC = () => {
   )
 }
 
-export default SignUp
+export default ProfessionalSignUp

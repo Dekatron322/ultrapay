@@ -715,28 +715,28 @@ const TransactionTable = ({
       case "successful":
         return (
           <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-green-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-green-600"></div>
             Successful
           </span>
         )
       case "confirming":
         return (
           <span className="inline-flex items-center rounded-full bg-yellow-50 px-2.5 py-1 text-xs font-medium text-yellow-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-yellow-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-yellow-600"></div>
             Confirming
           </span>
         )
       case "expired":
         return (
           <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-red-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-red-600"></div>
             Expired
           </span>
         )
       default:
         return (
           <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700">
-            <div className="mr-1.5 h-1.5 w-1.5 rounded-full bg-gray-600"></div>
+            <div className="mr-1.5 size-1.5 rounded-full bg-gray-600"></div>
             Unknown
           </span>
         )
@@ -878,46 +878,25 @@ const TransactionTable = ({
           <table className="w-full divide-y divide-gray-200">
             <thead className="sticky top-0 z-10 bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Date
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Ref
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Source
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Asset
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Amount
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" className="p-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Actions
                 </th>
               </tr>
@@ -989,9 +968,9 @@ const TransactionTable = ({
                     <td className="whitespace-nowrap px-2 py-3">
                       <div className="flex items-center gap-1">
                         {expandedRows.has(transaction.id) ? (
-                          <ChevronUp className="h-3 w-3 text-gray-500" />
+                          <ChevronUp className="size-3 text-gray-500" />
                         ) : (
-                          <ChevronDown className="h-3 w-3 text-gray-500" />
+                          <ChevronDown className="size-3 text-gray-500" />
                         )}
                       </div>
                     </td>
@@ -1070,14 +1049,14 @@ const TransactionTable = ({
                               }}
                               className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700"
                             >
-                              <Eye className="h-3 w-3" />
+                              <Eye className="size-3" />
                               View Details
                             </button>
                             <button
                               onClick={(e) => e.stopPropagation()}
                               className="inline-flex flex-1 items-center justify-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
                             >
-                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
@@ -1091,7 +1070,7 @@ const TransactionTable = ({
                               onClick={(e) => e.stopPropagation()}
                               className="inline-flex flex-1 items-center justify-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
                             >
-                              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
@@ -1546,7 +1525,7 @@ export default function Dashboard() {
                   {/* Today's Collection */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100">
                         <svg className="size-5  text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1593,7 +1572,7 @@ export default function Dashboard() {
                   {/* Pending Confirmations */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-yellow-100">
                         <svg className="size-5  text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1637,7 +1616,7 @@ export default function Dashboard() {
                   {/* Settled Today */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-green-100">
                         <svg className="size-5  text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -1683,7 +1662,7 @@ export default function Dashboard() {
                   {/* Available Balance */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-purple-100">
                         <svg className="size-5  text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"

@@ -397,7 +397,7 @@ export default function Dashboard() {
                   {/* Today's Collection */}
                   <div className="border-gray-200 last:border-r-0 max-2xl:pb-6 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 md:pr-6  2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100">
                         <svg className="size-5  text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -444,7 +444,7 @@ export default function Dashboard() {
                   {/* Pending Confirmations */}
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-yellow-100">
                         <svg className="size-5  text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -488,7 +488,7 @@ export default function Dashboard() {
                   {/* Settled Today */}
                   <div className="border-gray-200 pr-6 last:border-r-0 max-sm:border-b  max-sm:pb-4 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4 2xl:border-r">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-green-100">
                         <svg className="size-5  text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -534,7 +534,7 @@ export default function Dashboard() {
                   {/* Available Balance */}
                   <div className="pr-6 last:pr-0 sm:max-2xl:rounded-md sm:max-2xl:bg-[#f9f9f9] sm:max-2xl:p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-purple-100">
                         <svg className="size-5  text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
@@ -576,7 +576,7 @@ export default function Dashboard() {
                   onClick={() => setShowStaticQrSetupModal(true)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
                       <svg className="size-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
                           strokeLinecap="round"
@@ -598,7 +598,7 @@ export default function Dashboard() {
                   onClick={() => setShowPaymentLinkSetupModal(true)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-green-100">
                       <svg className="size-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
                           strokeLinecap="round"
@@ -620,7 +620,7 @@ export default function Dashboard() {
                   onClick={() => setShowWithdrawModal(true)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-purple-100">
                       <svg className="size-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
                           strokeLinecap="round"

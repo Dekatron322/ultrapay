@@ -110,7 +110,7 @@ export function Links({ isCollapsed }: LinksProps) {
                 <button
                   type="button"
                   onClick={() => handleExpand(link.name, !isExpanded)}
-                  className="flex w-full items-center justify-between gap-3 px-2 py-2"
+                  className="flex w-full items-center justify-between gap-3 p-2"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -192,7 +192,7 @@ export function Links({ isCollapsed }: LinksProps) {
                         >
                           <div className="flex items-center gap-2">
                             <div
-                              className={clsx("h-1.5 w-1.5 rounded-full transition-all duration-300", {
+                              className={clsx("size-1.5 rounded-full transition-all duration-300", {
                                 "scale-125 bg-[#EEF6FF]": isChildActive,
                                 "bg-gray-300 group-hover/child:bg-white": !isChildActive,
                               })}

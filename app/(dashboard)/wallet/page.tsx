@@ -1069,7 +1069,7 @@ export default function Dashboard() {
         <div className="flex w-full flex-col">
           <DashboardNav />
 
-          <div className="mx-auto flex w-full flex-col px-4 py-4 2xl:container sm:px-4 lg:px-6 2xl:px-16">
+          <div className="mx-auto flex w-full flex-col p-4 2xl:container sm:px-4 lg:px-6 2xl:px-16">
             {/* Simplified Wallet Header for Mobile */}
             <div className="mb-6 lg:hidden">
               <div className="mb-4">
@@ -1082,7 +1082,7 @@ export default function Dashboard() {
             <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 sm:h-12 sm:w-12">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 sm:h-12 sm:w-12">
                     <svg
                       className="size-5  text-white sm:h-6 sm:w-6"
                       fill="none"
@@ -1195,7 +1195,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1238,7 +1238,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-red-600">
-                        <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1281,7 +1281,7 @@ export default function Dashboard() {
                         </svg>
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
-                        <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="size-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -1443,7 +1443,7 @@ export default function Dashboard() {
                       <tbody className="divide-y divide-gray-200 bg-white">
                         {filteredTransactions.map((transaction) => (
                           <tr key={transaction.id} className="hover:bg-gray-50">
-                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
+                            <td className="whitespace-nowrap p-4 sm:px-6">
                               <div className="flex items-center gap-3">
                                 {getAssetIcon(transaction.assetPaid)}
                                 <div>
@@ -1455,7 +1455,7 @@ export default function Dashboard() {
                                 </div>
                               </div>
                             </td>
-                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
+                            <td className="whitespace-nowrap p-4 sm:px-6">
                               <div>
                                 <p className="text-sm font-medium text-gray-900">
                                   {selectedCurrencySymbol}
@@ -1466,10 +1466,10 @@ export default function Dashboard() {
                                 </p>
                               </div>
                             </td>
-                            <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
+                            <td className="whitespace-nowrap p-4 text-sm text-gray-900 sm:px-6">
                               {formatDate(transaction.date)}
                             </td>
-                            <td className="whitespace-nowrap px-4 py-4 sm:px-6">
+                            <td className="whitespace-nowrap p-4 sm:px-6">
                               <span
                                 className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${getStatusColor(
                                   transaction.status
@@ -1481,7 +1481,7 @@ export default function Dashboard() {
                                 {transaction.status}
                               </span>
                             </td>
-                            <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium sm:px-6">
+                            <td className="whitespace-nowrap p-4 text-right text-sm font-medium sm:px-6">
                               <button
                                 onClick={() => handleViewTransaction(transaction)}
                                 className="text-blue-600 hover:text-blue-900"

@@ -14,6 +14,7 @@ interface FormSelectModuleProps {
   error?: string | boolean
   placeholder?: string
   size?: "sm" | "md" | "lg"
+  loading?: boolean
 }
 
 export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
@@ -28,6 +29,7 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
   error,
   placeholder = "Select an option",
   size = "md",
+  loading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -115,12 +117,12 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
               ? "bg-[#F9FAFB] focus-within:ring-2 focus-within:ring-[#1447E6] focus-within:ring-offset-2 hover:border-[#1447E6]"
               : "bg-[#F9FAFB]"
           }
-          ${disabled ? "bg-[#F9FAFB]" : ""}
+          ${disabled || loading ? "bg-[#F9FAFB]" : ""}
           transition-all duration-200
         `}
-        onClick={handleDropdownClick}
-        onFocus={() => !disabled && setIsFocused(true)}
-        onBlur={() => !disabled && setIsFocused(false)}
+        onClick={!loading ? handleDropdownClick : undefined}
+        onFocus={() => !disabled && !loading && setIsFocused(true)}
+        onBlur={() => !disabled && !loading && setIsFocused(false)}
         role="combobox"
         aria-expanded={isOpen}
         aria-controls={`${name}-options`}
@@ -128,7 +130,24 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
         aria-describedby={error ? `${name}-error` : undefined}
       >
         <span className="flex items-center gap-2 text-base">
-          {selectedOption?.icon && (
+          {loading ? (
+            <svg
+              className="size-5 animate-spin text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"></circle>
+              <path
+                className="opacity-75"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                d="M12 2a10 10 0 0 1 10 10"
+              ></path>
+            </svg>
+          ) : selectedOption?.icon ? (
             <>
               {selectedOption.iconType === "svg" ? (
                 <img src={selectedOption.icon} alt={selectedOption.label} className="size-5  object-contain" />
@@ -136,15 +155,15 @@ export const FormSelectModule: React.FC<FormSelectModuleProps> = ({
                 <span className="text-lg">{selectedOption.icon}</span>
               )}
             </>
-          )}
-          {selectedOption?.label || placeholder}
+          ) : null}
+          {loading ? "Loading..." : selectedOption?.label || placeholder}
         </span>
         <ChevronDown
           className={`size-5 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </div>
 
-      {isOpen && (
+      {isOpen && !loading && (
         <div
           id={`${name}-options`}
           className="absolute z-10 mt-1 w-full rounded-md border border-[#E5E7EB] bg-[#FFFFFF] shadow-lg"

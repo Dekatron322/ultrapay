@@ -2,11 +2,15 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { PasswordInputModule } from "components/ui/Input/PasswordInput"
 import { ButtonModule } from "components/ui/Button/Button"
 import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
+import { useDispatch, useSelector } from "react-redux"
+import { setPassword, clearSetPasswordStatus } from "lib/redux/authSlice"
+import { notify } from "components/ui/Notification/Notification"
+import type { AppDispatch, RootState } from "lib/redux/store"
 
 interface Testimonial {
   id: number
@@ -19,13 +23,19 @@ interface Testimonial {
 
 const SetPassword: React.FC = () => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const dispatch = useDispatch<AppDispatch>()
+  const { isSettingPassword, setPasswordError, setPasswordSuccess } = useSelector((state: RootState) => state.auth)
+
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [formError, setFormError] = useState<string | null>(null)
   const [passwordStrength, setPasswordStrength] = useState<number>(0)
-  const [submitting, setSubmitting] = useState(false)
   const [suggested, setSuggested] = useState("")
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+
+  // Get email from URL parameters
+  const email = searchParams.get("email") || ""
 
   const testimonials: Testimonial[] = [
     {
@@ -65,6 +75,26 @@ const SetPassword: React.FC = () => {
     return () => clearInterval(interval)
   }, [testimonials.length])
 
+  // Show success notification and redirect on successful password set
+  useEffect(() => {
+    if (setPasswordSuccess) {
+      notify("success", "Password set successfully!", {
+        title: "Success",
+        description: "Your account has been created. Redirecting to dashboard...",
+      })
+      setTimeout(() => {
+        router.push("/")
+      }, 2000)
+    }
+  }, [setPasswordSuccess, router])
+
+  // Clear status when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearSetPasswordStatus())
+    }
+  }, [dispatch])
+
   const generatePassword = () => {
     const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ"
     const lower = "abcdefghijkmnopqrstuvwxyz"
@@ -103,6 +133,7 @@ const SetPassword: React.FC = () => {
 
     // Clear form errors when user starts typing
     if (formError) setFormError(null)
+    if (setPasswordError) dispatch(clearSetPasswordStatus())
   }
 
   const handleSuggestPassword = () => {
@@ -121,6 +152,7 @@ const SetPassword: React.FC = () => {
   const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(event.target.value)
     if (formError) setFormError(null)
+    if (setPasswordError) dispatch(clearSetPasswordStatus())
   }
 
   const validateForm = (): boolean => {
@@ -164,19 +196,26 @@ const SetPassword: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setFormError(null)
+    dispatch(clearSetPasswordStatus())
 
     if (!validateForm()) return
 
-    setSubmitting(true)
-    // Simulate API call
-    setTimeout(() => {
-      setSubmitting(false)
-      // Redirect to dashboard
-      router.push("/dashboard")
-    }, 1500)
+    if (!email) {
+      setFormError("Email not provided. Please start the registration process again.")
+      return
+    }
+
+    // Dispatch set password action
+    dispatch(
+      setPassword({
+        email: email,
+        password: newPassword,
+        confirmPassword: confirmPassword,
+      })
+    )
   }
 
-  const isButtonDisabled = submitting || !newPassword.trim() || !confirmPassword.trim()
+  const isButtonDisabled = isSettingPassword || !newPassword.trim() || !confirmPassword.trim()
 
   return (
     <div className="relative flex min-h-screen grid-cols-1 bg-gradient-to-br from-[#ffffff]">
@@ -309,22 +348,29 @@ const SetPassword: React.FC = () => {
                   </motion.div>
                 )}
 
+                {setPasswordError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-md bg-red-50 p-3 text-sm text-red-600"
+                  >
+                    {setPasswordError}
+                  </motion.div>
+                )}
+
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
                 >
                   <ButtonModule
                     type="submit"
                     variant="primary"
-                    size="lg"
+                    loading={isSettingPassword}
                     disabled={isButtonDisabled}
-                    loading={submitting}
-                    className="w-full transform py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-                    whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
-                    whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
+                    className="w-full"
                   >
-                    Set Password
+                    {isSettingPassword ? "Setting Password..." : "Set Password"}
                   </ButtonModule>
                 </motion.div>
               </form>

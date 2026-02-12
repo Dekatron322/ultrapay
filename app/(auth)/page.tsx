@@ -7,6 +7,10 @@ import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as EmailInput } from "components/ui/Input/EmailInput"
 import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
+import { useDispatch, useSelector } from "react-redux"
+import { loginUser } from "lib/redux/authSlice"
+import { notify } from "components/ui/Notification/Notification"
+import type { AppDispatch, RootState } from "lib/redux/store"
 
 interface Testimonial {
   id: number
@@ -19,11 +23,30 @@ interface Testimonial {
 
 const SignIn: React.FC = () => {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.auth)
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+
+  // Generate or retrieve unique device ID for this browser/app instance
+  const getDeviceId = () => {
+    if (typeof window === "undefined") return "ultrapay-web-app"
+
+    const storageKey = "ultrapay-device-id"
+    let deviceId = localStorage.getItem(storageKey)
+
+    if (!deviceId) {
+      // Generate a unique ID using timestamp and random string
+      deviceId = `ultrapay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      localStorage.setItem(storageKey, deviceId)
+    }
+
+    return deviceId
+  }
+
+  const appId = getDeviceId()
 
   const testimonials: Testimonial[] = [
     {
@@ -55,6 +78,17 @@ const SignIn: React.FC = () => {
     },
   ]
 
+  // Redirect to dashboard when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      notify("success", "Login successful!", {
+        title: "Welcome Back",
+        description: "You have been successfully logged in.",
+      })
+      router.push("/dashboard")
+    }
+  }, [isAuthenticated, router])
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
@@ -65,34 +99,28 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoading(true)
-    setError(null)
 
     // Basic validation
     if (!email.trim() || !password.trim()) {
-      setError("Please enter email and password")
-      setLoading(false)
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false)
-      // Redirect to dashboard
-      router.push("/verify-login")
-    }, 1500)
+    // Dispatch login action
+    dispatch(
+      loginUser({
+        email: email.trim(),
+        password: password,
+        appId: appId,
+      })
+    )
   }
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
-    // Clear error when user starts typing
-    if (error) setError(null)
   }
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
-    // Clear error when user starts typing
-    if (error) setError(null)
   }
 
   const isButtonDisabled = loading || email.trim() === "" || password.trim() === ""
@@ -212,14 +240,12 @@ const SignIn: React.FC = () => {
                 <ButtonModule
                   variant="primary"
                   size="lg"
+                  loading={loading}
+                  disabled={isButtonDisabled}
                   className="w-full transform py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                   type="submit"
-                  disabled={isButtonDisabled}
-                  loading={loading}
-                  whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
-                  whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
                 >
-                  Sign In
+                  {loading ? "Signing In..." : "Sign In"}
                 </ButtonModule>
               </motion.div>
             </form>
@@ -236,7 +262,7 @@ const SignIn: React.FC = () => {
             <p className="text-sm text-[#101836]">
               Don&apos;t have an account?{" "}
               <Link
-                href="/sign-up"
+                href="/sign-up/select-type"
                 className="font-medium text-[#1447E6] transition-all duration-200 ease-in-out hover:text-[#100A55]"
               >
                 Create Account

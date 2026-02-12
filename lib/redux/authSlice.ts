@@ -32,6 +32,22 @@ interface User {
   privileges: Privilege[]
 }
 
+// For backward compatibility, create a user object from merchant data
+const createMerchantUser = (merchant: LoginMerchant): User => ({
+  id: merchant.id,
+  fullName: merchant.businessName,
+  email: merchant.email,
+  phoneNumber: "", // Not provided in merchant response
+  accountId: merchant.id.toString(),
+  isActive: merchant.status.value === 1,
+  mustChangePassword: false, // Not provided in merchant response
+  isEmailVerified: merchant.isEmailConfirmed,
+  isPhoneVerified: false, // Not provided in merchant response
+  profilePicture: merchant.logo,
+  roles: [], // Not provided in merchant response
+  privileges: [], // Not provided in merchant response
+})
+
 interface Tokens {
   accessToken: string
   refreshToken: string
@@ -75,6 +91,114 @@ interface ChangePasswordResponse {
 interface LoginCredentials {
   email: string
   password: string
+  appId: string
+}
+
+interface LoginTokens {
+  accessToken: string
+  refreshToken: string
+  accessExpiry: string
+  refreshExpiry: string
+}
+
+interface LoginMerchant {
+  id: number
+  businessName: string
+  accountType: {
+    label: string
+    value: number
+  }
+  profession: string | null
+  email: string
+  logo: string | null
+  tag: string | null
+  defaultCurrency: string
+  alwaysApplyVat: boolean
+  vatPercentage: number
+  country: {
+    id: number
+    name: string
+    callingCode: string
+    abbreviation: string
+    currency: any
+  }
+  status: {
+    label: string
+    value: number
+  }
+  isEmailConfirmed: boolean
+}
+
+interface LoginResponse {
+  tokens: LoginTokens
+  merchant: LoginMerchant
+  message: string
+}
+
+interface BusinessRegistrationRequest {
+  countryId: number
+  businessName: string
+  email: string
+}
+
+interface ProfessionalRegistrationRequest {
+  countryId: number
+  displayName: string
+  profession: string
+  email: string
+}
+
+interface BusinessRegistrationResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    isVerified?: boolean
+  }
+}
+
+interface ProfessionalRegistrationResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    isVerified?: boolean
+  }
+}
+
+interface VerifyEmailRequest {
+  email: string
+  otp: string
+}
+
+interface VerifyEmailResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    isVerified: boolean
+  }
+}
+
+interface ResendOtpRequest {
+  email: string
+}
+
+interface ResendOtpResponse {
+  isSuccess: boolean
+  message: string
+}
+
+interface SetPasswordRequest {
+  email: string
+  password: string
+  confirmPassword: string
+}
+
+interface SetPasswordResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    token?: string
+    user?: User
+  }
 }
 
 interface AuthState {
@@ -88,6 +212,21 @@ interface AuthState {
   isChangingPassword: boolean
   changePasswordError: string | null
   changePasswordSuccess: boolean
+  isRegisteringBusiness: boolean
+  businessRegistrationError: string | null
+  businessRegistrationSuccess: boolean
+  isRegisteringProfessional: boolean
+  professionalRegistrationError: string | null
+  professionalRegistrationSuccess: boolean
+  isVerifyingEmail: boolean
+  emailVerificationError: string | null
+  emailVerificationSuccess: boolean
+  isResendingOtp: boolean
+  resendOtpError: string | null
+  resendOtpSuccess: boolean
+  isSettingPassword: boolean
+  setPasswordError: string | null
+  setPasswordSuccess: boolean
 }
 
 // Configure axios instance
@@ -278,6 +417,120 @@ api.interceptors.response.use(
   }
 )
 
+// Business registration function
+export const registerBusiness = createAsyncThunk(
+  "auth/registerBusiness",
+  async (businessData: BusinessRegistrationRequest, { rejectWithValue }) => {
+    try {
+      const response = await api.post<BusinessRegistrationResponse>(
+        buildApiUrl(API_ENDPOINTS.AUTH.REGISTER_AS_BUSINESS),
+        businessData
+      )
+
+      if (!response.data.isSuccess) {
+        return rejectWithValue(response.data.message || "Business registration failed")
+      }
+
+      return response.data
+    } catch (error: any) {
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data.message || "Business registration failed")
+      }
+      return rejectWithValue(error.message || "Network error during business registration")
+    }
+  }
+)
+
+// Email verification function
+export const verifyEmail = createAsyncThunk(
+  "auth/verifyEmail",
+  async (verificationData: VerifyEmailRequest, { rejectWithValue }) => {
+    try {
+      const response = await api.post<VerifyEmailResponse>(
+        buildApiUrl(API_ENDPOINTS.AUTH.VERIFY_ACCOUNT),
+        verificationData
+      )
+
+      if (!response.data.isSuccess) {
+        return rejectWithValue(response.data.message || "Email verification failed")
+      }
+
+      return response.data
+    } catch (error: any) {
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data.message || "Email verification failed")
+      }
+      return rejectWithValue(error.message || "Network error during email verification")
+    }
+  }
+)
+
+// Resend OTP function
+export const resendOtp = createAsyncThunk(
+  "auth/resendOtp",
+  async (emailData: ResendOtpRequest, { rejectWithValue }) => {
+    try {
+      const response = await api.post<ResendOtpResponse>(buildApiUrl(API_ENDPOINTS.AUTH.RESEND_OTP), emailData)
+
+      if (!response.data.isSuccess) {
+        return rejectWithValue(response.data.message || "Failed to resend OTP")
+      }
+
+      return response.data
+    } catch (error: any) {
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data.message || "Failed to resend OTP")
+      }
+      return rejectWithValue(error.message || "Network error while resending OTP")
+    }
+  }
+)
+
+// Register professional function
+export const registerProfessional = createAsyncThunk(
+  "auth/registerProfessional",
+  async (professionalData: ProfessionalRegistrationRequest, { rejectWithValue }) => {
+    try {
+      const response = await api.post<ProfessionalRegistrationResponse>(
+        buildApiUrl(API_ENDPOINTS.AUTH.REGISTER_AS_PROFESSIONAL),
+        professionalData
+      )
+
+      if (!response.data.isSuccess) {
+        return rejectWithValue(response.data.message || "Failed to register professional")
+      }
+
+      return response.data
+    } catch (error: any) {
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data.message || "Failed to register professional")
+      }
+      return rejectWithValue(error.message || "Network error while registering professional")
+    }
+  }
+)
+
+// Set password function
+export const setPassword = createAsyncThunk(
+  "auth/setPassword",
+  async (passwordData: SetPasswordRequest, { rejectWithValue }) => {
+    try {
+      const response = await api.post<SetPasswordResponse>(buildApiUrl(API_ENDPOINTS.AUTH.SET_PASSWORD), passwordData)
+
+      if (!response.data.isSuccess) {
+        return rejectWithValue(response.data.message || "Failed to set password")
+      }
+
+      return response.data
+    } catch (error: any) {
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data.message || "Failed to set password")
+      }
+      return rejectWithValue(error.message || "Network error while setting password")
+    }
+  }
+)
+
 // Load initial state from localStorage if available
 const persistedState = loadAuthState()
 const initialState: AuthState = {
@@ -291,13 +544,29 @@ const initialState: AuthState = {
   isChangingPassword: false,
   changePasswordError: null,
   changePasswordSuccess: false,
+  isRegisteringBusiness: false,
+  businessRegistrationError: null,
+  businessRegistrationSuccess: false,
+  isRegisteringProfessional: false,
+  professionalRegistrationError: null,
+  professionalRegistrationSuccess: false,
+  isVerifyingEmail: false,
+  emailVerificationError: null,
+  emailVerificationSuccess: false,
+  isResendingOtp: false,
+  resendOtpError: null,
+  resendOtpSuccess: false,
+  isSettingPassword: false,
+  setPasswordError: null,
+  setPasswordSuccess: false,
 }
 
-export const loginUser = createAsyncThunk("auth/", async (credentials: LoginCredentials, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk("auth/login", async (credentials: LoginCredentials, { rejectWithValue }) => {
   try {
     const response = await api.post<LoginResponse>(buildApiUrl(API_ENDPOINTS.AUTH.LOGIN), credentials)
 
-    if (!response.data.isSuccess) {
+    // For login, we consider it successful if we get tokens and merchant data
+    if (!response.data.tokens || !response.data.merchant) {
       return rejectWithValue(response.data.message || "Login failed")
     }
 
@@ -335,6 +604,26 @@ const authSlice = createSlice({
       state.changePasswordError = null
       state.changePasswordSuccess = false
     },
+    clearBusinessRegistrationStatus: (state) => {
+      state.businessRegistrationError = null
+      state.businessRegistrationSuccess = false
+    },
+    clearProfessionalRegistrationStatus: (state) => {
+      state.professionalRegistrationError = null
+      state.professionalRegistrationSuccess = false
+    },
+    clearEmailVerificationStatus: (state) => {
+      state.emailVerificationError = null
+      state.emailVerificationSuccess = false
+    },
+    clearResendOtpStatus: (state) => {
+      state.resendOtpError = null
+      state.resendOtpSuccess = false
+    },
+    clearSetPasswordStatus: (state) => {
+      state.setPasswordError = null
+      state.setPasswordSuccess = false
+    },
     initializeAuth: (state) => {
       const persistedState = loadAuthState()
       if (persistedState) {
@@ -365,13 +654,19 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
         state.loading = false
         state.isAuthenticated = true
-        state.user = action.payload.data.user
+
+        // Convert merchant data to user format for compatibility
+        const user = createMerchantUser(action.payload.merchant)
+        state.user = user
+
+        // Set tokens from response
         state.tokens = {
-          accessToken: action.payload.data.accessToken,
-          refreshToken: action.payload.data.refreshToken,
-          expiresAt: action.payload.data.expiresAt,
+          accessToken: action.payload.tokens.accessToken,
+          refreshToken: action.payload.tokens.refreshToken,
+          expiresAt: action.payload.tokens.accessExpiry,
         }
-        state.mustChangePassword = action.payload.data.mustChangePassword
+
+        state.mustChangePassword = false
         state.error = null
         saveAuthState(state)
       })
@@ -431,6 +726,104 @@ const authSlice = createSlice({
         state.changePasswordError = (action.payload as string) || "Password change failed"
         state.changePasswordSuccess = false
       })
+      // Business registration cases
+      .addCase(registerBusiness.pending, (state) => {
+        state.isRegisteringBusiness = true
+        state.businessRegistrationError = null
+        state.businessRegistrationSuccess = false
+      })
+      .addCase(registerBusiness.fulfilled, (state, action: PayloadAction<BusinessRegistrationResponse>) => {
+        state.isRegisteringBusiness = false
+        state.businessRegistrationSuccess = true
+        state.businessRegistrationError = null
+      })
+      .addCase(registerBusiness.rejected, (state, action) => {
+        state.isRegisteringBusiness = false
+        state.businessRegistrationError = (action.payload as string) || "Failed to register business"
+        state.businessRegistrationSuccess = false
+      })
+      // Professional registration cases
+      .addCase(registerProfessional.pending, (state) => {
+        state.isRegisteringProfessional = true
+        state.professionalRegistrationError = null
+        state.professionalRegistrationSuccess = false
+      })
+      .addCase(registerProfessional.fulfilled, (state, action: PayloadAction<ProfessionalRegistrationResponse>) => {
+        state.isRegisteringProfessional = false
+        state.professionalRegistrationSuccess = true
+        state.professionalRegistrationError = null
+      })
+      .addCase(registerProfessional.rejected, (state, action) => {
+        state.isRegisteringProfessional = false
+        state.professionalRegistrationError = (action.payload as string) || "Failed to register professional"
+        state.professionalRegistrationSuccess = false
+      })
+      // Email verification cases
+      .addCase(verifyEmail.pending, (state) => {
+        state.isVerifyingEmail = true
+        state.emailVerificationError = null
+        state.emailVerificationSuccess = false
+      })
+      .addCase(verifyEmail.fulfilled, (state, action: PayloadAction<VerifyEmailResponse>) => {
+        state.isVerifyingEmail = false
+        state.emailVerificationSuccess = true
+        state.emailVerificationError = null
+
+        // Update user's email verification status if user exists
+        if (state.user && action.payload.data?.isVerified) {
+          state.user.isEmailVerified = true
+          saveAuthState(state)
+        }
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        state.isVerifyingEmail = false
+        state.emailVerificationError = (action.payload as string) || "Email verification failed"
+        state.emailVerificationSuccess = false
+      })
+      // Resend OTP cases
+      .addCase(resendOtp.pending, (state) => {
+        state.isResendingOtp = true
+        state.resendOtpError = null
+        state.resendOtpSuccess = false
+      })
+      .addCase(resendOtp.fulfilled, (state, action: PayloadAction<ResendOtpResponse>) => {
+        state.isResendingOtp = false
+        state.resendOtpSuccess = true
+        state.resendOtpError = null
+      })
+      .addCase(resendOtp.rejected, (state, action) => {
+        state.isResendingOtp = false
+        state.resendOtpError = (action.payload as string) || "Failed to resend OTP"
+        state.resendOtpSuccess = false
+      })
+      // Set password cases
+      .addCase(setPassword.pending, (state) => {
+        state.isSettingPassword = true
+        state.setPasswordError = null
+        state.setPasswordSuccess = false
+      })
+      .addCase(setPassword.fulfilled, (state, action: PayloadAction<SetPasswordResponse>) => {
+        state.isSettingPassword = false
+        state.setPasswordSuccess = true
+        state.setPasswordError = null
+
+        // If the response includes user data and tokens, update the auth state
+        if (action.payload.data?.user && action.payload.data?.token) {
+          state.user = action.payload.data.user
+          state.tokens = {
+            accessToken: action.payload.data.token,
+            refreshToken: action.payload.data.token, // You might need to adjust this based on actual API response
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+          }
+          state.isAuthenticated = true
+          saveAuthState(state)
+        }
+      })
+      .addCase(setPassword.rejected, (state, action) => {
+        state.isSettingPassword = false
+        state.setPasswordError = (action.payload as string) || "Failed to set password"
+        state.setPasswordSuccess = false
+      })
   },
 })
 
@@ -438,6 +831,11 @@ export const {
   logout,
   clearError,
   clearChangePasswordStatus,
+  clearBusinessRegistrationStatus,
+  clearProfessionalRegistrationStatus,
+  clearEmailVerificationStatus,
+  clearResendOtpStatus,
+  clearSetPasswordStatus,
   initializeAuth,
   updateUserProfile,
   resetMustChangePassword,
