@@ -7,6 +7,9 @@ import WithdrawModal from "components/ui/Modal/withdraw-modal"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchKycStatus } from "lib/redux/merchantKycSlice"
+import type { AppDispatch, RootState } from "lib/redux/store"
 import Image from "next/image"
 import { DateRange } from "react-date-range"
 import "react-date-range/dist/styles.css"
@@ -22,6 +25,12 @@ interface DateRangeType {
 }
 
 export default function Dashboard() {
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+
+  // Redux state for KYC status
+  const { kycStatus, isFetchingKycStatus } = useSelector((state: RootState) => state.merchantKyc)
+
   const [selectedCurrencyId, setSelectedCurrencyId] = useState<number>(1)
   const [selectedCurrencySymbol, setSelectedCurrencySymbol] = useState<string>("NGN")
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("today")
@@ -39,7 +48,53 @@ export default function Dashboard() {
   const [showPaymentLinkSetupModal, setShowPaymentLinkSetupModal] = useState(false)
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawLoading, setWithdrawLoading] = useState(false)
-  const router = useRouter()
+
+  // Fetch KYC status on component mount
+  useEffect(() => {
+    dispatch(fetchKycStatus())
+  }, [dispatch])
+
+  // Helper functions to determine setup status
+  const getAccountSetupStatus = () => {
+    if (!kycStatus) return { completed: false, status: "Loading", step: 1 }
+
+    // KYC is completed only if label is NOT "NotCaptured"
+    const kycCompleted = kycStatus.status.label !== "NotCaptured"
+    const phoneCompleted = kycStatus.isPhoneConfirmed
+
+    if (phoneCompleted && kycCompleted) {
+      return { completed: true, status: "Verified", step: 3 }
+    } else if (phoneCompleted) {
+      return { completed: false, status: "KYC Pending", step: 2 }
+    } else {
+      return { completed: false, status: "Not Verified", step: 1 }
+    }
+  }
+
+  const getSetupProgress = () => {
+    if (!kycStatus) return { currentStep: 1, totalSteps: 3, completed: 0 }
+
+    // Use actual KYC status value for step display
+    const kycValue = kycStatus.status.value // Use the actual value from API
+    const phoneCompleted = kycStatus.isPhoneConfirmed
+    const kycCompleted = kycStatus.status.label !== "NotCaptured"
+
+    let completed = 0
+    if (phoneCompleted) completed = 1 // Phone verification completed
+    if (kycCompleted) completed = 2 // KYC completed
+
+    return {
+      currentStep: kycValue, // Show actual KYC status value (1, 2, 3, etc.)
+      totalSteps: 3,
+      completed,
+    }
+  }
+
+  // Check if KYC is incomplete (value 1 or 0)
+  const isKycIncomplete = () => {
+    if (!kycStatus) return true
+    return kycStatus.status.value <= 1 // 0 or 1 means incomplete
+  }
 
   // Mock currencies data
   const currenciesData = {
@@ -323,34 +378,72 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="mt-5">
-              <h1 className="text-lg font-semibold text-gray-900 ">Quick Setup Guide 1/3</h1>
+              <h1 className="text-lg font-semibold text-gray-900 ">
+                Quick Setup Guide {getSetupProgress().currentStep}/{getSetupProgress().totalSteps}
+              </h1>
               <p className="text-sm font-medium text-gray-500">Follow these steps to get started with UltraPay.</p>
 
               <div className="mt-4 space-y-3">
                 <div
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-colors hover:bg-gray-50"
+                  className={`flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-colors ${
+                    getAccountSetupStatus().completed
+                      ? "cursor-pointer hover:bg-gray-50"
+                      : "cursor-pointer hover:bg-gray-50"
+                  }`}
                   onClick={() => router.push("/account-setup")}
                 >
-                  <div className="flex size-6 items-center justify-center rounded-full bg-green-100">
-                    <svg className="size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                  <div
+                    className={`flex size-6 items-center justify-center rounded-full ${
+                      getAccountSetupStatus().completed ? "bg-green-100" : "bg-yellow-100"
+                    }`}
+                  >
+                    {getAccountSetupStatus().completed ? (
+                      <svg className="size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg className="size-4 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h3 className="text-sm font-medium text-gray-900">Complete your account setup</h3>
-                    <p className="text-xs text-green-600">Verified</p>
+                    <p
+                      className={`text-xs ${getAccountSetupStatus().completed ? "text-green-600" : "text-yellow-600"}`}
+                    >
+                      {getAccountSetupStatus().status}
+                    </p>
                   </div>
-                  <svg className="size-5  text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
 
                 <div
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-colors hover:bg-gray-50"
-                  onClick={() => router.push("/add-settlement-bank")}
+                  className={`flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors ${
+                    isKycIncomplete()
+                      ? "cursor-not-allowed bg-gray-50 opacity-60"
+                      : "cursor-pointer bg-white hover:bg-gray-50"
+                  }`}
+                  onClick={() => !isKycIncomplete() && router.push("/add-settlement-bank")}
                 >
-                  <div className="flex size-6 items-center justify-center rounded-full bg-yellow-100">
-                    <svg className="size-4 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div
+                    className={`flex size-6 items-center justify-center rounded-full ${
+                      isKycIncomplete() ? "bg-gray-100" : "bg-yellow-100"
+                    }`}
+                  >
+                    <svg
+                      className={`size-4 ${isKycIncomplete() ? "text-gray-400" : "text-yellow-600"}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -360,17 +453,41 @@ export default function Dashboard() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">Add settlement Bank Account</h3>
-                    <p className="text-xs text-yellow-600">Not Verified</p>
+                    <h3 className={`text-sm font-medium ${isKycIncomplete() ? "text-gray-500" : "text-gray-900"}`}>
+                      Add settlement Bank Account
+                    </h3>
+                    <p className={`text-xs ${isKycIncomplete() ? "text-gray-400" : "text-yellow-600"}`}>
+                      {isKycIncomplete() ? "Complete KYC first" : "Not Verified"}
+                    </p>
                   </div>
-                  <svg className="size-5  text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    className={`size-5 ${isKycIncomplete() ? "text-gray-300" : "text-gray-400"}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
 
-                <div className="flex cursor-not-allowed items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 opacity-60">
-                  <div className="flex size-6 items-center justify-center rounded-full bg-gray-100">
-                    <svg className="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div
+                  className={`flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors ${
+                    isKycIncomplete()
+                      ? "cursor-not-allowed bg-gray-50 opacity-60"
+                      : "cursor-not-allowed bg-gray-50 opacity-60"
+                  }`}
+                >
+                  <div
+                    className={`flex size-6 items-center justify-center rounded-full ${
+                      isKycIncomplete() ? "bg-gray-100" : "bg-gray-100"
+                    }`}
+                  >
+                    <svg
+                      className={`size-4 ${isKycIncomplete() ? "text-gray-400" : "text-gray-400"}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -380,10 +497,19 @@ export default function Dashboard() {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-500">Create your first payment</h3>
-                    <p className="text-xs text-gray-400">Pending</p>
+                    <h3 className={`text-sm font-medium ${isKycIncomplete() ? "text-gray-500" : "text-gray-500"}`}>
+                      Create your first payment
+                    </h3>
+                    <p className={`text-xs ${isKycIncomplete() ? "text-gray-400" : "text-gray-400"}`}>
+                      {isKycIncomplete() ? "Complete KYC first" : "Pending"}
+                    </p>
                   </div>
-                  <svg className="size-5  text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    className={`size-5 ${isKycIncomplete() ? "text-gray-300" : "text-gray-300"}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>

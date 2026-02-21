@@ -28,6 +28,14 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: "/identity/auth/change-password",
   },
 
+  MERCHANT_KYC: {
+    PERSONAL_INFO: "/Merchant/Kyc/PersonalInfo",
+    VERIFY_PHONE: "/Merchant/Kyc/Phone/VerifyOtp",
+    RESEND_PHONE_OTP: "/Merchant/Kyc/Phone/RequestOtp",
+    KYC_STATUS: "/Merchant/Kyc/Status",
+    IDENTITY_VERIFICATION: "/Merchant/Kyc/Identity",
+  },
+
   EMPLOYEE: {
     EMPLOYEE: "/identity/users",
     INVITE: "/identity/users/invite",

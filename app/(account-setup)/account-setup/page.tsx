@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "lib/redux/store"
 import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as BasicFormInput } from "components/ui/Input/Input"
 import { FormInputModule } from "components/ui/Input/EmailInput"
@@ -10,6 +12,30 @@ import { motion } from "framer-motion"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
 import { ContactIconOutline, SecurityIconOutline, UserOutlineIcon } from "components/Icons/LogoIcons"
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc"
+import {
+  submitPersonalInfo,
+  clearPersonalInfoStatus,
+  verifyPhone,
+  clearPhoneVerificationStatus,
+  resendPhoneOtp,
+  clearResendPhoneOtpStatus,
+  verifyIdentity,
+  clearIdentityVerificationStatus,
+  fetchKycStatus,
+} from "lib/redux/merchantKycSlice"
+import { fetchCountries } from "lib/redux/systemsSlice"
+import { uploadToCloudinary } from "lib/config/cloudinary"
+import { notify } from "components/ui/Notification/Notification"
+
+// Identity Type enum
+enum IdentityType {
+  Unknown = 0,
+  NationalIdentity = 1,
+  Passport = 2,
+  DriverLicense = 3,
+  VotersCard = 4,
+  Bvn = 5,
+}
 
 interface Testimonial {
   id: number
@@ -21,6 +47,35 @@ interface Testimonial {
 }
 
 const AccountSetup: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+
+  // Redux state for merchant KYC
+  const {
+    isSubmittingPersonalInfo,
+    personalInfoError,
+    personalInfoSuccess,
+    isVerifyingPhone,
+    phoneVerificationError,
+    phoneVerificationSuccess,
+    isResendingPhoneOtp,
+    resendPhoneOtpError,
+    resendPhoneOtpSuccess,
+    isSubmittingIdentityVerification,
+    identityVerificationError,
+    identityVerificationSuccess,
+    isFetchingKycStatus,
+    kycStatusError,
+    kycStatus,
+  } = useSelector((state: RootState) => state.merchantKyc)
+
+  // Redux state for systems
+  const {
+    countries,
+    loading: countriesLoading,
+    error: countriesError,
+  } = useSelector((state: RootState) => state.systems)
+
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -32,21 +87,25 @@ const AccountSetup: React.FC = () => {
   const [counter, setCounter] = useState<number>(60)
   const [canResend, setCanResend] = useState<boolean>(false)
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
-  const router = useRouter()
 
   // Upload progress states
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({})
   const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({})
 
-  const countries = [
-    { value: "NG", label: "Nigeria +234", icon: "/ultra-pay/NG.svg", iconType: "svg" },
-    // { value: "US", label: "United States +1", icon: "/ultra-pay/US.svg", iconType: "svg" },
-    // { value: "UK", label: "United Kingdom +44", icon: "/ultra-pay/UK.svg", iconType: "svg" },
-    // { value: "CA", label: "Canada +1", icon: "/ultra-pay/CA.svg", iconType: "svg" },
-    { value: "GH", label: "Ghana +233", icon: "/ultra-pay/GH.svg", iconType: "svg" },
-    { value: "KE", label: "Kenya +254", icon: "/ultra-pay/KE.svg", iconType: "svg" },
-    // { value: "ZA", label: "South Africa +27", icon: "/ultra-pay/ZA.svg", iconType: "svg" },
-  ]
+  // Transform countries data for dropdown
+  const transformedCountries = countries.map((country) => ({
+    value: country.abbreviation,
+    label: `${country.name} +${country.callingCode}`,
+    icon: country.currency.avatar,
+    iconType: "image" as const,
+  }))
+
+  // Handle countries loading and error states
+  useEffect(() => {
+    if (countriesError) {
+      setFormError("Failed to load countries. Please refresh the page.")
+    }
+  }, [countriesError])
 
   const testimonials: Testimonial[] = [
     {
@@ -128,6 +187,132 @@ const AccountSetup: React.FC = () => {
     }
   }, [currentStep])
 
+  // Fetch countries on component mount
+  useEffect(() => {
+    if (countries.length === 0 && !countriesLoading) {
+      dispatch(fetchCountries())
+    }
+  }, [countries.length, countriesLoading, dispatch])
+
+  // Fetch KYC status on component mount
+  useEffect(() => {
+    dispatch(fetchKycStatus())
+  }, [dispatch])
+
+  // Handle KYC status response and automatically show appropriate step
+  useEffect(() => {
+    if (kycStatus) {
+      if (kycStatus.isPhoneConfirmed) {
+        // Phone is confirmed, show KYC step directly
+        setCurrentStep(3)
+      }
+      // If phone is not confirmed, stay at current step (will be step 1 by default)
+    }
+  }, [kycStatus])
+
+  // Handle personal info submission success
+  useEffect(() => {
+    if (personalInfoSuccess) {
+      // Clear the success status
+      dispatch(clearPersonalInfoStatus())
+
+      // Check if phone is already confirmed
+      if (kycStatus && kycStatus.isPhoneConfirmed) {
+        // Skip phone verification and go directly to KYC step
+        setCurrentStep(3)
+      } else {
+        // Move to phone verification step
+        setCurrentStep((prev) => prev + 1)
+      }
+    }
+  }, [personalInfoSuccess, dispatch, kycStatus])
+
+  // Handle personal info submission error
+  useEffect(() => {
+    if (personalInfoError) {
+      setFormError(personalInfoError)
+    }
+  }, [personalInfoError])
+
+  // Handle phone verification success
+  useEffect(() => {
+    if (phoneVerificationSuccess) {
+      // Clear the success status and move to next step
+      dispatch(clearPhoneVerificationStatus())
+      setCurrentStep((prev) => prev + 1)
+    }
+  }, [phoneVerificationSuccess, dispatch])
+
+  // Handle phone verification error
+  useEffect(() => {
+    if (phoneVerificationError) {
+      setFormError(phoneVerificationError)
+    }
+  }, [phoneVerificationError])
+
+  // Handle resend phone OTP success
+  useEffect(() => {
+    if (resendPhoneOtpSuccess) {
+      // Clear the success status and reset counter
+      dispatch(clearResendPhoneOtpStatus())
+      setCounter(60)
+      setCanResend(false)
+      // Clear OTP input fields
+      setFormData((prev) => ({ ...prev, otp: Array(6).fill("") }))
+      // Clear any existing errors
+      setFormError(null)
+    }
+  }, [resendPhoneOtpSuccess, dispatch])
+
+  // Handle resend phone OTP error
+  useEffect(() => {
+    if (resendPhoneOtpError) {
+      setFormError(resendPhoneOtpError)
+    }
+  }, [resendPhoneOtpError])
+
+  // Handle KYC status error
+  useEffect(() => {
+    if (kycStatusError) {
+      console.error("Failed to fetch KYC status:", kycStatusError)
+      // Don't show error to user, just log it as it's not critical for the flow
+    }
+  }, [kycStatusError])
+
+  // Handle identity verification success
+  useEffect(() => {
+    if (identityVerificationSuccess) {
+      // Clear the success status and redirect to dashboard
+      dispatch(clearIdentityVerificationStatus())
+
+      // Show success notification
+      notify("success", "Identity verification completed successfully!", {
+        title: "Verification Successful",
+        description: "Your identity information has been saved and verified.",
+        duration: 5000,
+      })
+
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 2000)
+    }
+  }, [identityVerificationSuccess, dispatch, router])
+
+  // Handle identity verification error
+  useEffect(() => {
+    if (identityVerificationError) {
+      setFormError(identityVerificationError)
+
+      // Show error notification
+      notify("error", "Identity verification failed", {
+        title: "Verification Error",
+        description: identityVerificationError,
+        duration: 5000,
+      })
+    }
+  }, [identityVerificationError])
+
   const genderOptions = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
@@ -136,9 +321,11 @@ const AccountSetup: React.FC = () => {
   ]
 
   const idTypeOptions = [
-    { value: "nin", label: "National Identification Number (NIN)" },
-    { value: "passport", label: "International Passport" },
-    { value: "driverLicense", label: "Driver's License" },
+    { value: IdentityType.NationalIdentity.toString(), label: "National Identification Number (NIN)" },
+    { value: IdentityType.Passport.toString(), label: "International Passport" },
+    { value: IdentityType.DriverLicense.toString(), label: "Driver's License" },
+    { value: IdentityType.VotersCard.toString(), label: "Voter's Card" },
+    { value: IdentityType.Bvn.toString(), label: "Bank Verification Number (BVN)" },
   ]
 
   // Handle input changes
@@ -233,10 +420,9 @@ const AccountSetup: React.FC = () => {
 
   const handleResendOtp = () => {
     if (!canResend) return
-    setFormData((prev) => ({ ...prev, otp: Array(6).fill("") }))
-    setFormError(null)
-    setCounter(60)
-    setCanResend(false)
+
+    // Call the resend OTP API with the phone number
+    dispatch(resendPhoneOtp(formData.phone))
   }
 
   // File upload handling with progress simulation
@@ -261,7 +447,7 @@ const AccountSetup: React.FC = () => {
     }, 200)
   }
 
-  const handleFileUpload = (fieldName: string, file: File) => {
+  const handleFileUpload = async (fieldName: string, file: File) => {
     if (formError) setFormError(null)
     if (fieldErrors[fieldName]) {
       setFieldErrors((prev) => ({ ...prev, [fieldName]: false }))
@@ -270,25 +456,70 @@ const AccountSetup: React.FC = () => {
     // Create a preview URL for the uploaded image
     const imageUrl = URL.createObjectURL(file)
 
-    // Simulate upload progress
-    simulateUploadProgress(fieldName, () => {
-      // Store both the file name and the preview URL
+    // Set uploading state
+    setUploadingFiles((prev) => ({ ...prev, [fieldName]: true }))
+    setUploadProgress((prev) => ({ ...prev, [fieldName]: 0 }))
+
+    try {
+      // Upload to Cloudinary using the helper function
+      const result = await uploadToCloudinary(file, "identity_documents")
+
+      // Store the Cloudinary URL and preview
       setFormData((prev) => ({
         ...prev,
-        [fieldName]: file.name,
-        [`${fieldName}Preview`]: imageUrl,
+        [fieldName]: result.secure_url, // Store the Cloudinary URL
+        [`${fieldName}Preview` as keyof typeof formData]: imageUrl,
       }))
+
+      // Show success notification for file upload
+      notify("success", "Document uploaded successfully", {
+        title: "Upload Successful",
+        description: "Your identity document has been uploaded to Cloudinary.",
+        duration: 3000,
+      })
+    } catch (error) {
+      console.error("Upload error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Failed to upload image. Please try again."
+      setFormError(errorMessage)
+
+      // Show error notification for upload failure
+      notify("error", "Upload failed", {
+        title: "Upload Error",
+        description: errorMessage,
+        duration: 5000,
+      })
+
+      // Reset the file input
+      const fileInput = document.querySelector(`input[name="${fieldName}"]`) as HTMLInputElement
+      if (fileInput) {
+        fileInput.value = ""
+      }
+    } finally {
+      // Reset uploading state
+      setUploadingFiles((prev) => ({ ...prev, [fieldName]: false }))
       setUploadProgress((prev) => ({ ...prev, [fieldName]: 0 }))
-    })
+    }
   }
 
   const handleFileDelete = (fieldName: string) => {
+    // Revoke the object URL to prevent memory leaks
+    const previewKey = `${fieldName}Preview` as keyof typeof formData
+    if (formData[previewKey] && typeof formData[previewKey] === "string") {
+      URL.revokeObjectURL(formData[previewKey] as string)
+    }
+
     setFormData((prev) => ({
       ...prev,
       [fieldName]: "",
-      [`${fieldName}Preview`]: "",
+      [`${fieldName}Preview` as keyof typeof formData]: "",
     }))
     setFieldErrors((prev) => ({ ...prev, [fieldName]: false }))
+
+    // Reset the file input
+    const fileInput = document.querySelector(`input[name="${fieldName}"]`) as HTMLInputElement
+    if (fileInput) {
+      fileInput.value = ""
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
@@ -408,8 +639,26 @@ const AccountSetup: React.FC = () => {
     const errors: Record<string, boolean> = {}
 
     if (!idType) errors.idType = true
-    if (idType === "nin" && !idNumber.trim()) errors.idNumber = true
-    if ((idType === "passport" || idType === "driverLicense") && !idFrontImage) errors.idFrontImage = true
+
+    // For NIN and BVN, only require ID number
+    if (
+      (idType === IdentityType.NationalIdentity.toString() || idType === IdentityType.Bvn.toString()) &&
+      !idNumber.trim()
+    ) {
+      errors.idNumber = true
+    }
+
+    // For Passport, Driver's License, and Voter's Card, require both ID number and document
+    if (
+      (idType === IdentityType.Passport.toString() ||
+        idType === IdentityType.DriverLicense.toString() ||
+        idType === IdentityType.VotersCard.toString()) &&
+      (!idNumber.trim() || !idFrontImage)
+    ) {
+      if (!idNumber.trim()) errors.idNumber = true
+      if (!idFrontImage) errors.idFrontImage = true
+    }
+
     if (!acceptTerms) errors.acceptTerms = true
 
     if (Object.keys(errors).length > 0) {
@@ -419,21 +668,33 @@ const AccountSetup: React.FC = () => {
     }
 
     // Validate ID number based on type
-    if (idType === "nin" && !/^\d{11}$/.test(idNumber)) {
+    if (idType === IdentityType.NationalIdentity.toString() && !/^\d{11}$/.test(idNumber)) {
       setFieldErrors({ idNumber: true })
       setFormError("NIN must be 11 digits")
       return false
     }
 
-    if (idType === "passport" && idNumber.length < 6) {
+    if (idType === IdentityType.Bvn.toString() && !/^\d{11}$/.test(idNumber)) {
+      setFieldErrors({ idNumber: true })
+      setFormError("BVN must be 11 digits")
+      return false
+    }
+
+    if (idType === IdentityType.Passport.toString() && idNumber.length < 6) {
       setFieldErrors({ idNumber: true })
       setFormError("Please enter a valid passport number")
       return false
     }
 
-    if (idType === "driverLicense" && idNumber.length < 8) {
+    if (idType === IdentityType.DriverLicense.toString() && idNumber.length < 8) {
       setFieldErrors({ idNumber: true })
       setFormError("Please enter a valid driver's license number")
+      return false
+    }
+
+    if (idType === IdentityType.VotersCard.toString() && idNumber.length < 8) {
+      setFieldErrors({ idNumber: true })
+      setFormError("Please enter a valid voter's card number")
       return false
     }
 
@@ -445,8 +706,40 @@ const AccountSetup: React.FC = () => {
   const nextStep = () => {
     setFormError(null)
 
-    if (currentStep === 1 && !validateStep1()) return
-    if (currentStep === 2 && !validateStep2()) return
+    if (currentStep === 1) {
+      if (!validateStep1()) return
+
+      // Submit personal info to API
+      const { firstName, lastName, phone, dateOfBirth, gender } = formData
+
+      // Convert gender string to number (0 for male, 1 for female)
+      const genderNumber = gender === "male" ? 0 : 1
+
+      const personalInfoData = {
+        firstName,
+        lastName,
+        phoneNumber: phone,
+        dateOfBirth,
+        gender: genderNumber,
+      }
+
+      dispatch(submitPersonalInfo(personalInfoData))
+      return // Don't increment step here - wait for API success
+    }
+
+    if (currentStep === 2) {
+      if (!validateStep2()) return
+
+      // Submit phone verification to API
+      const otpString = formData.otp.join("")
+
+      const otpData = {
+        otp: otpString,
+      }
+
+      dispatch(verifyPhone(otpData))
+      return // Don't increment step here - wait for API success
+    }
 
     setCurrentStep((prev) => prev + 1)
   }
@@ -463,19 +756,17 @@ const AccountSetup: React.FC = () => {
 
     if (!validateStep3()) return
 
-    setLoading(true)
+    // Submit identity verification to API
+    const { idType, idNumber, idFrontImage, acceptTerms } = formData
 
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Redirect to dashboard
-      router.push("/business-information")
-    } catch (error) {
-      setFormError("An error occurred during registration. Please try again.")
-    } finally {
-      setLoading(false)
+    const identityData = {
+      identityType: parseInt(idType),
+      identityNumber: idNumber,
+      identityDocumentFront: idFrontImage || "", // Empty string for NIN/BVN which don't require document
+      termsAccepted: acceptTerms,
     }
+
+    dispatch(verifyIdentity(identityData))
   }
 
   // Step progress component
@@ -535,11 +826,20 @@ const AccountSetup: React.FC = () => {
     previewUrl: string
     onDelete: () => void
   }) => {
+    // Check if it's an image (Cloudinary URLs or local file extensions)
     const isImage =
       previewUrl &&
-      (fileName.toLowerCase().endsWith(".jpg") ||
+      (fileName.toLowerCase().includes("cloudinary") ||
+        fileName.toLowerCase().endsWith(".jpg") ||
         fileName.toLowerCase().endsWith(".jpeg") ||
-        fileName.toLowerCase().endsWith(".png"))
+        fileName.toLowerCase().endsWith(".png") ||
+        fileName.toLowerCase().endsWith(".gif") ||
+        fileName.toLowerCase().endsWith(".webp"))
+
+    // Extract filename from Cloudinary URL or use the fileName directly
+    const displayName = fileName.includes("cloudinary")
+      ? fileName.split("/").pop()?.split("?")[0] || "Identity Document"
+      : fileName
 
     return (
       <div className="mt-4">
@@ -550,7 +850,7 @@ const AccountSetup: React.FC = () => {
                 {isImage ? (
                   <img
                     src={previewUrl}
-                    alt={fileName}
+                    alt={displayName}
                     className="size-16 rounded-lg border border-gray-300 object-cover"
                   />
                 ) : (
@@ -567,8 +867,8 @@ const AccountSetup: React.FC = () => {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-900">{fileName}</p>
-                <p className="mt-1 text-xs text-green-600">✓ Uploaded successfully</p>
+                <p className="truncate text-sm font-medium text-gray-900">{displayName}</p>
+                <p className="text-xs text-gray-500">Identity document uploaded successfully</p>
               </div>
             </div>
             <button
@@ -713,8 +1013,11 @@ const AccountSetup: React.FC = () => {
                           <span className="flex items-center gap-2">
                             {formData.country && (
                               <Image
-                                src={countries.find((c) => c.value === formData.country)?.icon || ""}
-                                alt={countries.find((c) => c.value === formData.country)?.label.split(" ")[0] || ""}
+                                src={transformedCountries.find((c) => c.value === formData.country)?.icon || ""}
+                                alt={
+                                  transformedCountries.find((c) => c.value === formData.country)?.label.split(" ")[0] ||
+                                  ""
+                                }
                                 width={20}
                                 height={14}
                                 className="rounded-sm"
@@ -722,7 +1025,7 @@ const AccountSetup: React.FC = () => {
                             )}
                             <span>
                               {formData.country
-                                ? countries.find((c) => c.value === formData.country)?.label.split(" ")[1]
+                                ? transformedCountries.find((c) => c.value === formData.country)?.label.split(" ")[1]
                                 : "Country"}
                             </span>
                           </span>
@@ -732,28 +1035,37 @@ const AccountSetup: React.FC = () => {
                         </button>
 
                         {countryDropdownOpen && (
-                          <div className="absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg">
+                          <div className="absolute left-0 top-full z-50 mt-1 w-60 rounded-lg border border-gray-200 bg-white shadow-lg">
                             <div className="max-h-60 overflow-auto">
-                              {countries.map((country) => (
-                                <button
-                                  key={country.value}
-                                  type="button"
-                                  onClick={() => {
-                                    setFormData((prev) => ({ ...prev, country: country.value }))
-                                    setCountryDropdownOpen(false)
-                                  }}
-                                  className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-                                >
-                                  <Image
-                                    src={country.icon}
-                                    alt={country.label.split(" ")[0] || ""}
-                                    width={20}
-                                    height={14}
-                                    className="rounded-sm"
-                                  />
-                                  <span>{country.label}</span>
-                                </button>
-                              ))}
+                              {countriesLoading ? (
+                                <div className="flex items-center justify-center py-4">
+                                  <div className="size-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                                  <span className="ml-2 text-sm text-gray-600">Loading countries...</span>
+                                </div>
+                              ) : transformedCountries.length > 0 ? (
+                                transformedCountries.map((country) => (
+                                  <button
+                                    key={country.value}
+                                    type="button"
+                                    onClick={() => {
+                                      setFormData((prev) => ({ ...prev, country: country.value }))
+                                      setCountryDropdownOpen(false)
+                                    }}
+                                    className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+                                  >
+                                    <Image
+                                      src={country.icon}
+                                      alt={country.label.split(" ")[0] || ""}
+                                      width={20}
+                                      height={14}
+                                      className="rounded-sm"
+                                    />
+                                    <span>{country.label}</span>
+                                  </button>
+                                ))
+                              ) : (
+                                <div className="py-4 text-center text-sm text-gray-600">No countries available</div>
+                              )}
                             </div>
                           </div>
                         )}
@@ -850,14 +1162,16 @@ const AccountSetup: React.FC = () => {
                       <button
                         type="button"
                         className={`text-sm ${
-                          canResend
+                          canResend && !isResendingPhoneOtp
                             ? "text-blue-600 hover:text-blue-500 hover:underline"
                             : "cursor-not-allowed text-gray-400"
                         }`}
                         onClick={handleResendOtp}
-                        disabled={!canResend}
+                        disabled={!canResend || isResendingPhoneOtp}
                       >
-                        {canResend
+                        {isResendingPhoneOtp
+                          ? "Sending..."
+                          : canResend
                           ? "Didn't receive the code? Resend"
                           : `Resend code in ${Math.floor(counter / 60)}:${(counter % 60).toString().padStart(2, "0")}`}
                       </button>
@@ -895,12 +1209,23 @@ const AccountSetup: React.FC = () => {
                       error={fieldErrors.idType}
                     />
 
-                    {formData.idType === "nin" ? (
+                    {formData.idType === IdentityType.NationalIdentity.toString() ? (
                       <BasicFormInput
                         label="NIN Number"
                         type="text"
                         name="idNumber"
                         placeholder="Enter your NIN number"
+                        value={formData.idNumber}
+                        onChange={handleInputChange}
+                        required
+                        error={fieldErrors.idNumber}
+                      />
+                    ) : formData.idType === IdentityType.Bvn.toString() ? (
+                      <BasicFormInput
+                        label="BVN Number"
+                        type="text"
+                        name="idNumber"
+                        placeholder="Enter your BVN number"
                         value={formData.idNumber}
                         onChange={handleInputChange}
                         required
@@ -921,7 +1246,9 @@ const AccountSetup: React.FC = () => {
                           error={fieldErrors.idNumber}
                         />
 
-                        {(formData.idType === "passport" || formData.idType === "driverLicense") && (
+                        {(formData.idType === IdentityType.Passport.toString() ||
+                          formData.idType === IdentityType.DriverLicense.toString() ||
+                          formData.idType === IdentityType.VotersCard.toString()) && (
                           <div>
                             <label className="mb-2 block text-sm font-medium text-gray-700">
                               Upload ID Document (Front) <span className="text-red-500">*</span>
@@ -1019,9 +1346,16 @@ const AccountSetup: React.FC = () => {
                     type="button"
                     variant="primary"
                     onClick={nextStep}
+                    disabled={isSubmittingPersonalInfo}
                     className="w-full py-3"
                   >
-                    Continue
+                    {isSubmittingPersonalInfo ? (
+                      <div className="flex items-center justify-center">
+                        <span className="ml-2">Submitting...</span>
+                      </div>
+                    ) : (
+                      "Continue"
+                    )}
                   </ButtonModule>
                 )}
 
@@ -1042,9 +1376,16 @@ const AccountSetup: React.FC = () => {
                       type="button"
                       variant="primary"
                       onClick={nextStep}
+                      disabled={isVerifyingPhone}
                       className="py-3"
                     >
-                      Verify
+                      {isVerifyingPhone ? (
+                        <div className="flex items-center justify-center">
+                          <span className="ml-2">Verifying...</span>
+                        </div>
+                      ) : (
+                        "Verify"
+                      )}
                     </ButtonModule>
                   </>
                 )}
@@ -1053,20 +1394,25 @@ const AccountSetup: React.FC = () => {
                   <>
                     <ButtonModule
                       icon={<VscArrowLeft />}
-                      type="button"
                       variant="outline"
                       onClick={prevStep}
-                      className="py-3"
+                      disabled={isSubmittingIdentityVerification}
+                      className="flex-1"
                     >
-                      Previous
+                      Back
                     </ButtonModule>
-                    <ButtonModule type="submit" variant="primary" disabled={loading} className="py-3">
-                      {loading ? (
+                    <ButtonModule
+                      type="submit"
+                      variant="primary"
+                      disabled={isSubmittingIdentityVerification}
+                      className="flex-1 py-3"
+                    >
+                      {isSubmittingIdentityVerification ? (
                         <div className="flex items-center justify-center">
-                          <span className="ml-2">Creating Account...</span>
+                          <span className="ml-2">Verifying Identity...</span>
                         </div>
                       ) : (
-                        "Create Profile"
+                        "Complete Verification"
                       )}
                     </ButtonModule>
                   </>

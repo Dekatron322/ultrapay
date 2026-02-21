@@ -41,25 +41,22 @@ const api = axios.create({
 })
 
 // Async thunk to fetch countries
-export const fetchCountries = createAsyncThunk(
-  "systems/fetchCountries",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get<CountriesResponse>(buildApiUrl(API_ENDPOINTS.SYSTEMS.GET))
+export const fetchCountries = createAsyncThunk("systems/fetchCountries", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get<CountriesResponse>(buildApiUrl(API_ENDPOINTS.SYSTEMS.GET))
 
-      if (!response.data.isSuccess) {
-        return rejectWithValue(response.data.message || "Failed to fetch countries")
-      }
-
-      return response.data
-    } catch (error: any) {
-      if (error.response?.data) {
-        return rejectWithValue(error.response.data.message || "Failed to fetch countries")
-      }
-      return rejectWithValue(error.message || "Network error while fetching countries")
+    if (!response.data.isSuccess) {
+      return rejectWithValue(response.data.message || "Failed to fetch countries")
     }
+
+    return response.data
+  } catch (error: any) {
+    if (error.response?.data) {
+      return rejectWithValue(error.response.data.message || "Failed to fetch countries")
+    }
+    return rejectWithValue(error.message || "Network error while fetching countries")
   }
-)
+})
 
 const initialState: SystemsState = {
   countries: [],

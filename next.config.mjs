@@ -7,7 +7,6 @@ import { env } from "./env.mjs"
  */
 const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
   reactStrictMode: true,
-  amp: false,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -18,6 +17,16 @@ const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
     fetches: {
       fullUrl: true,
     },
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
   rewrites() {
     return [
