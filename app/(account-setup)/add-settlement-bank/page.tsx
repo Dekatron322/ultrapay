@@ -1,8 +1,9 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
 import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as BasicFormInput } from "components/ui/Input/Input"
 import { motion } from "framer-motion"
@@ -10,10 +11,20 @@ import { FormSelectModule } from "components/ui/Input/FormSelectModule"
 import { HousesOutlineIcon, SecurityIconOutline } from "components/Icons/LogoIcons"
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc"
 import { notify } from "components/ui/Notification/Notification"
+import {
+  clearAddBankStatus,
+  clearAddBvnStatus,
+  addSettlementBankAccount,
+  addSettlementBankBvn,
+} from "lib/redux/settlementBankSlice"
+import { RootState, AppDispatch } from "lib/redux/store"
 
 const AddSettlementBank: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { isAddingBvn, addBvnSuccess, bvnData, addBvnError, isAddingBank, addBankSuccess, bankData, addBankError } =
+    useSelector((state: RootState) => state.settlementBank)
   const [currentStep, setCurrentStep] = useState(1)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false) // For final submission only
   const [formError, setFormError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({})
   const router = useRouter()
@@ -23,7 +34,7 @@ const AddSettlementBank: React.FC = () => {
     // Step 1: BVN Verification
     bvn: "",
     bvnVerified: false,
-    bvnData: null as { fullName: string; dateOfBirth: string; bvn: string } | null,
+    bvnData: null as { fullName: string; bvnVerifiedAt: string; bvn: string } | null,
 
     // Step 2: Bank Account Details
     accountName: "",
@@ -72,12 +83,11 @@ const AddSettlementBank: React.FC = () => {
       setFieldErrors((prev) => ({ ...prev, [name]: false }))
     }
 
-    // Auto-fill account name when bank is selected
-    if (name === "bankCode" && formData.bvnData) {
+    // Auto-fill bank name when bank is selected
+    if (name === "bankCode") {
       setFormData((prev) => ({
         ...prev,
         bankName: bankOptions.find((bank) => bank.value === value)?.label || "",
-        accountName: prev.bvnData?.fullName || "",
       }))
     }
   }
@@ -89,33 +99,51 @@ const AddSettlementBank: React.FC = () => {
       return
     }
 
-    setLoading(true)
-    setFormError(null)
-
-    // Simulate API call for BVN verification
-    setTimeout(() => {
-      setLoading(false)
-      // For demo purposes, we'll simulate successful verification
-      // In a real app, this would call an actual BVN verification API
-      if (formData.bvn.length === 11) {
-        const mockBVNData = {
-          fullName: "Adebayo Johnson", // Mock data
-          dateOfBirth: "1990-05-15", // Mock data
-          bvn: formData.bvn,
-        }
-        setFormData((prev) => ({
-          ...prev,
-          bvnVerified: true,
-          bvnData: mockBVNData,
-          accountName: mockBVNData.fullName,
-        }))
-        setFormError("BVN verified successfully ✓")
-        setTimeout(() => setFormError(null), 3000)
-      } else {
-        setFormError("Invalid BVN number. BVN must be 11 digits.")
-      }
-    }, 2000)
+    dispatch(clearAddBvnStatus())
+    dispatch(addSettlementBankBvn({ bvn: formData.bvn }))
   }
+
+  // Handle BVN verification response
+  useEffect(() => {
+    if (addBvnSuccess && bvnData) {
+      setFormData((prev) => ({
+        ...prev,
+        bvnVerified: true,
+        bvnData: {
+          fullName: "Cray Ibra", // Default name for BVN verification
+          bvnVerifiedAt: bvnData.bvnVerifiedAt,
+          bvn: bvnData.bvn,
+        },
+        accountName: "Cray Ibra", // Auto-fill with default name
+      }))
+      setFormError("BVN verified successfully ✓")
+      setTimeout(() => setFormError(null), 3000)
+    }
+
+    if (addBvnError) {
+      setFormError(addBvnError)
+    }
+  }, [addBvnSuccess, bvnData, addBvnError])
+
+  // Handle bank account addition response
+  useEffect(() => {
+    if (addBankSuccess && bankData) {
+      // Show success notification
+      notify("success", "Account successfully added", {
+        title: "Settlement bank account added successfully",
+        duration: 3000,
+      })
+
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 1000)
+    }
+
+    if (addBankError) {
+      setFormError(addBankError)
+    }
+  }, [addBankSuccess, bankData, addBankError, router])
 
   // Validation functions for each step
   const validateStep1 = () => {
@@ -187,27 +215,15 @@ const AddSettlementBank: React.FC = () => {
 
     if (!validateStep2()) return
 
-    setLoading(true)
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Show success notification
-      notify("success", "Account successfully added", {
-        title: "Settlement bank account added successfully",
-        duration: 3000,
+    dispatch(clearAddBankStatus())
+    dispatch(
+      addSettlementBankAccount({
+        bankCode: formData.bankCode,
+        bankName: formData.bankName,
+        accountNumber: formData.accountNumber,
+        accountName: formData.accountName,
       })
-
-      // Redirect to dashboard after a short delay
-      setTimeout(() => {
-        router.push("/dashboard")
-      }, 1000)
-    } catch (error) {
-      setFormError("An error occurred during registration. Please try again.")
-    } finally {
-      setLoading(false)
-    }
+    )
   }
 
   // Step progress component
@@ -351,7 +367,10 @@ const AddSettlementBank: React.FC = () => {
                                 <strong>Full Name:</strong> {formData.bvnData.fullName}
                               </p>
                               <p>
-                                <strong>Date of Birth:</strong> {formData.bvnData.dateOfBirth}
+                                <strong>BVN Verified At:</strong>{" "}
+                                {formData.bvnData.bvnVerifiedAt
+                                  ? new Date(formData.bvnData.bvnVerifiedAt).toLocaleString()
+                                  : "N/A"}
                               </p>
                               <p>
                                 <strong>BVN:</strong> {formData.bvnData.bvn}
@@ -472,10 +491,10 @@ const AddSettlementBank: React.FC = () => {
                       type="button"
                       variant="primary"
                       onClick={formData.bvnVerified ? nextStep : verifyBVN}
-                      disabled={loading}
+                      disabled={isAddingBvn}
                       className="w-full py-3"
                     >
-                      {loading ? "Verifying..." : formData.bvnVerified ? "Continue" : "Verify BVN"}
+                      {isAddingBvn ? "Verifying..." : formData.bvnVerified ? "Continue" : "Verify BVN"}
                     </ButtonModule>
                   </>
                 )}
@@ -491,8 +510,8 @@ const AddSettlementBank: React.FC = () => {
                     >
                       Previous
                     </ButtonModule>
-                    <ButtonModule type="submit" variant="primary" disabled={loading} className="py-3">
-                      {loading ? (
+                    <ButtonModule type="submit" variant="primary" disabled={isAddingBank} className="py-3">
+                      {isAddingBank ? (
                         <div className="flex items-center justify-center">
                           <span className="ml-2">Adding Bank Account...</span>
                         </div>

@@ -201,14 +201,20 @@ const AccountSetup: React.FC = () => {
 
   // Handle KYC status response and automatically show appropriate step
   useEffect(() => {
-    if (kycStatus) {
+    if (kycStatus && kycStatus.onboarding) {
+      // If identity is already completed, redirect to business setup page
+      if (kycStatus.onboarding.isIdentityCompleted) {
+        router.push("/business-information")
+        return
+      }
+
       if (kycStatus.isPhoneConfirmed) {
         // Phone is confirmed, show KYC step directly
         setCurrentStep(3)
       }
       // If phone is not confirmed, stay at current step (will be step 1 by default)
     }
-  }, [kycStatus])
+  }, [kycStatus, router])
 
   // Handle personal info submission success
   useEffect(() => {
@@ -216,8 +222,11 @@ const AccountSetup: React.FC = () => {
       // Clear the success status
       dispatch(clearPersonalInfoStatus())
 
-      // Check if phone is already confirmed
-      if (kycStatus && kycStatus.isPhoneConfirmed) {
+      // Check if identity is already completed
+      if (kycStatus && kycStatus.onboarding && kycStatus.onboarding.isIdentityCompleted) {
+        // Redirect to business setup page
+        router.push("/business-information")
+      } else if (kycStatus && kycStatus.isPhoneConfirmed) {
         // Skip phone verification and go directly to KYC step
         setCurrentStep(3)
       } else {
@@ -225,7 +234,7 @@ const AccountSetup: React.FC = () => {
         setCurrentStep((prev) => prev + 1)
       }
     }
-  }, [personalInfoSuccess, dispatch, kycStatus])
+  }, [personalInfoSuccess, dispatch, kycStatus, router])
 
   // Handle personal info submission error
   useEffect(() => {
@@ -237,11 +246,19 @@ const AccountSetup: React.FC = () => {
   // Handle phone verification success
   useEffect(() => {
     if (phoneVerificationSuccess) {
-      // Clear the success status and move to next step
+      // Clear the success status
       dispatch(clearPhoneVerificationStatus())
-      setCurrentStep((prev) => prev + 1)
+
+      // Check if identity is already completed
+      if (kycStatus && kycStatus.onboarding && kycStatus.onboarding.isIdentityCompleted) {
+        // Redirect to business setup page
+        router.push("/business-information")
+      } else {
+        // Move to next step (identity verification)
+        setCurrentStep((prev) => prev + 1)
+      }
     }
-  }, [phoneVerificationSuccess, dispatch])
+  }, [phoneVerificationSuccess, dispatch, kycStatus, router])
 
   // Handle phone verification error
   useEffect(() => {

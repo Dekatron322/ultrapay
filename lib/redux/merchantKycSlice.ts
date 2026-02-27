@@ -62,7 +62,91 @@ export interface KycStatusResponse {
     message: string | null
     uploadedDate: string | null
     isPhoneConfirmed: boolean
+    onboarding: {
+      completedQuickSetupSteps: number
+      totalQuickSetupSteps: number
+      isPersonalInfoCompleted: boolean
+      isIdentityCompleted: boolean
+      isLogoUploaded: boolean
+      isBusinessOrProfessionalInfoCompleted: boolean
+      isBusinessAddressCompleted: boolean
+      isBusinessFormationCompleted: boolean
+      isSettlementBankAdded: boolean
+    }
   }
+}
+
+export interface MerchantKycData {
+  merchantId: number
+  identityType: {
+    label: string
+    value: number
+  }
+  status: {
+    label: string
+    value: number
+  }
+  message: string | null
+  uploadedDate: string
+  approvalDate: string | null
+  approvedBy: string | null
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  dateOfBirth: string
+  gender: {
+    label: string
+    value: number
+  }
+  isPhoneConfirmed: boolean
+  phoneConfirmedDate: string
+  identityNumber: string
+  identityDocumentFront: string
+  termsAccepted: boolean
+  termsAcceptedDate: string
+  businessName: string
+  businessEmail: string
+  businessType: string
+  businessCategory: string
+  businessCountryId: number
+  businessAddress: string
+  businessCity: string
+  proofOfAddress: string
+  certificateOfIncorporation: string
+  memorandumOfAssociation: string
+  statusReport: string
+  representativeFirstName: string | null
+  representativeLastName: string | null
+  representativeEmail: string | null
+  representativePhoneNumber: string | null
+  representativePosition: string | null
+  merchant: {
+    id: number
+    businessName: string
+    accountType: {
+      label: string
+      value: number
+    }
+    profession: string | null
+    email: string
+    logo: string
+    tag: string | null
+    defaultCurrency: string
+    alwaysApplyVat: boolean
+    vatPercentage: number
+    country: string | null
+    status: {
+      label: string
+      value: number
+    }
+    isEmailConfirmed: boolean
+  }
+}
+
+export interface GetMerchantKycResponse {
+  isSuccess: boolean
+  message: string
+  data: MerchantKycData
 }
 
 // Merchant KYC State
@@ -96,6 +180,12 @@ interface MerchantKycState {
   kycStatusError: string | null
   kycStatus: KycStatusResponse["data"] | null
 
+  // Fetch Merchant KYC state
+  isFetchingMerchantKyc: boolean
+  merchantKycError: string | null
+  merchantKycData: MerchantKycData | null
+  merchantKycMessage: string | null
+
   // General state
   loading: boolean
   error: string | null
@@ -122,6 +212,10 @@ const initialState: MerchantKycState = {
   isFetchingKycStatus: false,
   kycStatusError: null,
   kycStatus: null,
+  isFetchingMerchantKyc: false,
+  merchantKycError: null,
+  merchantKycData: null,
+  merchantKycMessage: null,
   loading: false,
   error: null,
 }
@@ -236,6 +330,23 @@ export const fetchKycStatus = createAsyncThunk("merchantKyc/fetchKycStatus", asy
   }
 })
 
+export const fetchMerchantKyc = createAsyncThunk("merchantKyc/fetchMerchantKyc", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get<GetMerchantKycResponse>(buildApiUrl(API_ENDPOINTS.MERCHANT_KYC.GET_MERCHANT_KYC))
+
+    if (!response.data.isSuccess) {
+      return rejectWithValue(response.data.message || "Failed to fetch merchant KYC data")
+    }
+
+    return response.data
+  } catch (error: any) {
+    if (error.response?.data) {
+      return rejectWithValue(error.response.data.message || "Failed to fetch merchant KYC data")
+    }
+    return rejectWithValue(error.message || "Network error while fetching merchant KYC data")
+  }
+})
+
 // Merchant KYC slice
 const merchantKycSlice = createSlice({
   name: "merchantKyc",
@@ -269,6 +380,13 @@ const merchantKycSlice = createSlice({
       state.identityVerificationData = null
     },
 
+    // Clear merchant KYC status
+    clearMerchantKycStatus: (state) => {
+      state.merchantKycError = null
+      state.merchantKycData = null
+      state.merchantKycMessage = null
+    },
+
     // Clear all errors
     clearErrors: (state) => {
       state.error = null
@@ -277,6 +395,7 @@ const merchantKycSlice = createSlice({
       state.resendPhoneOtpError = null
       state.identityVerificationError = null
       state.kycStatusError = null
+      state.merchantKycError = null
     },
 
     // Reset state
@@ -300,6 +419,10 @@ const merchantKycSlice = createSlice({
       state.isFetchingKycStatus = false
       state.kycStatusError = null
       state.kycStatus = null
+      state.isFetchingMerchantKyc = false
+      state.merchantKycError = null
+      state.merchantKycData = null
+      state.merchantKycMessage = null
       state.loading = false
       state.error = null
     },
@@ -398,6 +521,25 @@ const merchantKycSlice = createSlice({
         state.kycStatusError = (action.payload as string) || "Failed to fetch KYC status"
         state.kycStatus = null
       })
+      // Fetch Merchant KYC cases
+      .addCase(fetchMerchantKyc.pending, (state) => {
+        state.isFetchingMerchantKyc = true
+        state.merchantKycError = null
+        state.merchantKycData = null
+        state.merchantKycMessage = null
+      })
+      .addCase(fetchMerchantKyc.fulfilled, (state, action: PayloadAction<GetMerchantKycResponse>) => {
+        state.isFetchingMerchantKyc = false
+        state.merchantKycData = action.payload.data
+        state.merchantKycMessage = action.payload.message
+        state.merchantKycError = null
+      })
+      .addCase(fetchMerchantKyc.rejected, (state, action) => {
+        state.isFetchingMerchantKyc = false
+        state.merchantKycError = (action.payload as string) || "Failed to fetch merchant KYC data"
+        state.merchantKycData = null
+        state.merchantKycMessage = null
+      })
   },
 })
 
@@ -406,6 +548,7 @@ export const {
   clearPhoneVerificationStatus,
   clearResendPhoneOtpStatus,
   clearIdentityVerificationStatus,
+  clearMerchantKycStatus,
   clearErrors,
   resetMerchantKycState,
 } = merchantKycSlice.actions

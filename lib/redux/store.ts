@@ -7,6 +7,8 @@ import areaOfficeReducer from "./areaOfficeSlice"
 import departmentReducer from "./departmentSlice"
 import systemsReducer from "./systemsSlice"
 import merchantKycReducer from "./merchantKycSlice"
+import settlementBankReducer from "./settlementBankSlice"
+import businessInfoReducer from "./businessInfoSlice"
 import { adminApi } from "./adminSlice"
 
 export const store = configureStore({
@@ -18,6 +20,8 @@ export const store = configureStore({
     departments: departmentReducer,
     systems: systemsReducer,
     merchantKyc: merchantKycReducer,
+    settlementBank: settlementBankReducer,
+    businessInfo: businessInfoReducer,
     [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(adminApi.middleware),

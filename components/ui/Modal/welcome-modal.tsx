@@ -7,15 +7,26 @@ import CloseIcon from "public/close-icon"
 import { ButtonModule } from "../Button/Button"
 import Image from "next/image"
 import { BankVerificationOutline, UserDetailsOutline, UserVerificationOutline } from "components/Icons/LogoIcons"
+import { useSelector } from "react-redux"
+import { RootState } from "lib/redux/store"
 
 interface WelcomeModalProps {
   isOpen: boolean
   onRequestClose: () => void
   onGetStarted: () => void
   loading?: boolean
+  kycStatus?: any
 }
 
-const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onRequestClose, onGetStarted, loading = false }) => {
+const WelcomeModal: React.FC<WelcomeModalProps> = ({
+  isOpen,
+  onRequestClose,
+  onGetStarted,
+  loading = false,
+  kycStatus,
+}) => {
+  const { user } = useSelector((state: RootState) => state.auth)
+
   return (
     <Modal
       isOpen={isOpen}
@@ -24,7 +35,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onRequestClose, onG
       overlayClassName="fixed z-[999] inset-0 bg-black bg-opacity-50 backdrop-blur-sm overflow-hidden flex items-center justify-center"
     >
       <div className="flex w-full items-center justify-between bg-[#F3F4F6] p-4">
-        <h2 className="text-lg font-bold">Hello Ibrahim!</h2>
+        <h2 className="text-lg font-bold">Hello {user?.fullName || "User"}!</h2>
         <div onClick={onRequestClose} className="cursor-pointer">
           <CloseIcon />
         </div>

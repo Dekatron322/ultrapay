@@ -26,6 +26,8 @@ export const API_ENDPOINTS = {
     LOGIN: "/Merchant/Login",
     REFRESH_TOKEN: "/identity/auth/refresh",
     CHANGE_PASSWORD: "/identity/auth/change-password",
+    ADD_TAG: "/Merchant/Tag",
+    CHECK_TAG: "/Merchant/Tag",
   },
 
   MERCHANT_KYC: {
@@ -34,6 +36,21 @@ export const API_ENDPOINTS = {
     RESEND_PHONE_OTP: "/Merchant/Kyc/Phone/RequestOtp",
     KYC_STATUS: "/Merchant/Kyc/Status",
     IDENTITY_VERIFICATION: "/Merchant/Kyc/Identity",
+    GET_MERCHANT_KYC: "/Merchant/Kyc",
+  },
+
+  SETTLEMENT_BANK: {
+    ADD: "/Merchant/SettlementBank/Bvn",
+    ADD_BANK: "/Merchant/SettlementBank/Account",
+    GET_SETTLEMENT_BANK: "/Merchant/SettlementBank",
+  },
+
+  BUSINESS_INFORMATION: {
+    BUSINESS_LOG: "/Merchant/Kyc/Logo",
+    BUSINESS_INFO: "/Merchant/Kyc/BusinessInfo",
+    BUSINESS_ADDRESS: "/Merchant/Kyc/BusinessAddress",
+    BUSINESS_FORMATION: "/Merchant/Kyc/BusinessFormation",
+    REPRESENTATIVE_INFO: "/Merchant/Kyc/RepresentativeInfo",
   },
 
   EMPLOYEE: {

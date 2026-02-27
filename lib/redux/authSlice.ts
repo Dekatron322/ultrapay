@@ -30,6 +30,7 @@ interface User {
   profilePicture: string | null
   roles: Role[]
   privileges: Privilege[]
+  tag: string | null
 }
 
 // For backward compatibility, create a user object from merchant data
@@ -46,6 +47,7 @@ const createMerchantUser = (merchant: LoginMerchant): User => ({
   profilePicture: merchant.logo,
   roles: [], // Not provided in merchant response
   privileges: [], // Not provided in merchant response
+  tag: merchant.tag,
 })
 
 interface Tokens {
@@ -201,6 +203,31 @@ interface SetPasswordResponse {
   }
 }
 
+interface AddTagRequest {
+  tag: string
+}
+
+interface AddTagResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    tag: string
+  }
+}
+
+interface CheckTagRequest {
+  tag: string
+}
+
+interface CheckTagResponse {
+  isSuccess: boolean
+  message: string
+  data?: {
+    exists: boolean
+    tag: string
+  }
+}
+
 interface AuthState {
   user: User | null
   tokens: Tokens | null
@@ -227,6 +254,12 @@ interface AuthState {
   isSettingPassword: boolean
   setPasswordError: string | null
   setPasswordSuccess: boolean
+  isAddingTag: boolean
+  addTagError: string | null
+  addTagSuccess: boolean
+  isCheckingTag: boolean
+  checkTagError: string | null
+  tagExists: boolean | null
 }
 
 // Configure axios instance
@@ -531,6 +564,44 @@ export const setPassword = createAsyncThunk(
   }
 )
 
+// Add tag function
+export const addTag = createAsyncThunk("auth/addTag", async (tagData: AddTagRequest, { rejectWithValue }) => {
+  try {
+    const response = await api.post<AddTagResponse>(buildApiUrl(API_ENDPOINTS.AUTH.ADD_TAG), tagData)
+
+    if (!response.data.isSuccess) {
+      return rejectWithValue(response.data.message || "Failed to add tag")
+    }
+
+    return response.data
+  } catch (error: any) {
+    if (error.response?.data) {
+      return rejectWithValue(error.response.data.message || "Failed to add tag")
+    }
+    return rejectWithValue(error.message || "Network error while adding tag")
+  }
+})
+
+// Check tag function
+export const checkTag = createAsyncThunk("auth/checkTag", async (tagData: CheckTagRequest, { rejectWithValue }) => {
+  try {
+    const response = await api.get<CheckTagResponse>(buildApiUrl(API_ENDPOINTS.AUTH.CHECK_TAG), {
+      params: { tag: tagData.tag },
+    })
+
+    if (!response.data.isSuccess) {
+      return rejectWithValue(response.data.message || "Failed to check tag")
+    }
+
+    return response.data
+  } catch (error: any) {
+    if (error.response?.data) {
+      return rejectWithValue(error.response.data.message || "Failed to check tag")
+    }
+    return rejectWithValue(error.message || "Network error while checking tag")
+  }
+})
+
 // Load initial state from localStorage if available
 const persistedState = loadAuthState()
 const initialState: AuthState = {
@@ -559,6 +630,12 @@ const initialState: AuthState = {
   isSettingPassword: false,
   setPasswordError: null,
   setPasswordSuccess: false,
+  isAddingTag: false,
+  addTagError: null,
+  addTagSuccess: false,
+  isCheckingTag: false,
+  checkTagError: null,
+  tagExists: null,
 }
 
 export const loginUser = createAsyncThunk("auth/login", async (credentials: LoginCredentials, { rejectWithValue }) => {
@@ -623,6 +700,14 @@ const authSlice = createSlice({
     clearSetPasswordStatus: (state) => {
       state.setPasswordError = null
       state.setPasswordSuccess = false
+    },
+    clearAddTagStatus: (state) => {
+      state.addTagError = null
+      state.addTagSuccess = false
+    },
+    clearCheckTagStatus: (state) => {
+      state.checkTagError = null
+      state.tagExists = null
     },
     initializeAuth: (state) => {
       const persistedState = loadAuthState()
@@ -824,6 +909,44 @@ const authSlice = createSlice({
         state.setPasswordError = (action.payload as string) || "Failed to set password"
         state.setPasswordSuccess = false
       })
+      // Add tag cases
+      .addCase(addTag.pending, (state) => {
+        state.isAddingTag = true
+        state.addTagError = null
+        state.addTagSuccess = false
+      })
+      .addCase(addTag.fulfilled, (state, action: PayloadAction<AddTagResponse>) => {
+        state.isAddingTag = false
+        state.addTagSuccess = true
+        state.addTagError = null
+
+        // Update user's tag if user exists and response contains tag data
+        if (state.user && action.payload.data?.tag) {
+          state.user.tag = action.payload.data.tag
+          saveAuthState(state)
+        }
+      })
+      .addCase(addTag.rejected, (state, action) => {
+        state.isAddingTag = false
+        state.addTagError = (action.payload as string) || "Failed to add tag"
+        state.addTagSuccess = false
+      })
+      // Check tag cases
+      .addCase(checkTag.pending, (state) => {
+        state.isCheckingTag = true
+        state.checkTagError = null
+        state.tagExists = null
+      })
+      .addCase(checkTag.fulfilled, (state, action: PayloadAction<CheckTagResponse>) => {
+        state.isCheckingTag = false
+        state.checkTagError = null
+        state.tagExists = action.payload.data?.exists ?? false
+      })
+      .addCase(checkTag.rejected, (state, action) => {
+        state.isCheckingTag = false
+        state.checkTagError = (action.payload as string) || "Failed to check tag"
+        state.tagExists = null
+      })
   },
 })
 
@@ -836,6 +959,8 @@ export const {
   clearEmailVerificationStatus,
   clearResendOtpStatus,
   clearSetPasswordStatus,
+  clearAddTagStatus,
+  clearCheckTagStatus,
   initializeAuth,
   updateUserProfile,
   resetMustChangePassword,

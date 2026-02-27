@@ -43,11 +43,19 @@ export default function Dashboard() {
     },
   ])
   const [isLoading, setIsLoading] = useState(false)
-  const [showWelcomeModal, setShowWelcomeModal] = useState(true)
   const [showStaticQrSetupModal, setShowStaticQrSetupModal] = useState(false)
   const [showPaymentLinkSetupModal, setShowPaymentLinkSetupModal] = useState(false)
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawLoading, setWithdrawLoading] = useState(false)
+
+  // Determine if welcome modal should show based on KYC status
+  const shouldShowWelcomeModal = () => {
+    if (!kycStatus || !kycStatus.onboarding) return false
+
+    const { onboarding } = kycStatus
+    // Show welcome modal if user hasn't completed any setup steps
+    return onboarding.completedQuickSetupSteps === 0
+  }
 
   // Fetch KYC status on component mount
   useEffect(() => {
@@ -58,42 +66,45 @@ export default function Dashboard() {
   const getAccountSetupStatus = () => {
     if (!kycStatus) return { completed: false, status: "Loading", step: 1 }
 
-    // KYC is completed only if label is NOT "NotCaptured"
-    const kycCompleted = kycStatus.status.label !== "NotCaptured"
-    const phoneCompleted = kycStatus.isPhoneConfirmed
+    const { onboarding, status, isPhoneConfirmed } = kycStatus
 
-    if (phoneCompleted && kycCompleted) {
-      return { completed: true, status: "Verified", step: 3 }
-    } else if (phoneCompleted) {
-      return { completed: false, status: "KYC Pending", step: 2 }
+    // Use onboarding data for more accurate status
+    const quickSetupCompleted = onboarding.completedQuickSetupSteps
+    const totalQuickSetupSteps = onboarding.totalQuickSetupSteps
+
+    // Account is considered completed if all quick setup steps are done
+    if (quickSetupCompleted === totalQuickSetupSteps) {
+      return { completed: true, status: "Verified", step: totalQuickSetupSteps }
+    } else if (quickSetupCompleted > 0) {
+      return { completed: false, status: "In Progress", step: quickSetupCompleted + 1 }
     } else {
-      return { completed: false, status: "Not Verified", step: 1 }
+      return { completed: false, status: "Not Started", step: 1 }
     }
   }
 
   const getSetupProgress = () => {
     if (!kycStatus) return { currentStep: 1, totalSteps: 3, completed: 0 }
 
-    // Use actual KYC status value for step display
-    const kycValue = kycStatus.status.value // Use the actual value from API
-    const phoneCompleted = kycStatus.isPhoneConfirmed
-    const kycCompleted = kycStatus.status.label !== "NotCaptured"
-
-    let completed = 0
-    if (phoneCompleted) completed = 1 // Phone verification completed
-    if (kycCompleted) completed = 2 // KYC completed
+    const { onboarding } = kycStatus
 
     return {
-      currentStep: kycValue, // Show actual KYC status value (1, 2, 3, etc.)
-      totalSteps: 3,
-      completed,
+      currentStep: onboarding.completedQuickSetupSteps + 1, // Show next step
+      totalSteps: onboarding.totalQuickSetupSteps,
+      completed: onboarding.completedQuickSetupSteps,
     }
   }
 
-  // Check if KYC is incomplete (value 1 or 0)
+  // Check if KYC is incomplete based on onboarding status
   const isKycIncomplete = () => {
     if (!kycStatus) return true
-    return kycStatus.status.value <= 1 // 0 or 1 means incomplete
+
+    const { onboarding } = kycStatus
+    // KYC is incomplete if personal info, identity, or business info is not completed
+    return (
+      !onboarding.isPersonalInfoCompleted ||
+      !onboarding.isIdentityCompleted ||
+      !onboarding.isBusinessOrProfessionalInfoCompleted
+    )
   }
 
   // Mock currencies data
@@ -171,12 +182,7 @@ export default function Dashboard() {
     }
   }, [selectedCurrencyId])
 
-  const handleWelcomeModalClose = () => {
-    setShowWelcomeModal(false)
-  }
-
   const handleGetStarted = () => {
-    setShowWelcomeModal(false)
     router.push("/account-setup")
   }
 
@@ -384,9 +390,10 @@ export default function Dashboard() {
               <p className="text-sm font-medium text-gray-500">Follow these steps to get started with UltraPay.</p>
 
               <div className="mt-4 space-y-3">
+                {/* Personal Info Step */}
                 <div
                   className={`flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-colors ${
-                    getAccountSetupStatus().completed
+                    kycStatus?.onboarding.isPersonalInfoCompleted
                       ? "cursor-pointer hover:bg-gray-50"
                       : "cursor-pointer hover:bg-gray-50"
                   }`}
@@ -394,10 +401,10 @@ export default function Dashboard() {
                 >
                   <div
                     className={`flex size-6 items-center justify-center rounded-full ${
-                      getAccountSetupStatus().completed ? "bg-green-100" : "bg-yellow-100"
+                      kycStatus?.onboarding.isPersonalInfoCompleted ? "bg-green-100" : "bg-yellow-100"
                     }`}
                   >
-                    {getAccountSetupStatus().completed ? (
+                    {kycStatus?.onboarding.isPersonalInfoCompleted ? (
                       <svg className="size-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -413,11 +420,13 @@ export default function Dashboard() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">Complete your account setup</h3>
+                    <h3 className="text-sm font-medium text-gray-900">Personal Information</h3>
                     <p
-                      className={`text-xs ${getAccountSetupStatus().completed ? "text-green-600" : "text-yellow-600"}`}
+                      className={`text-xs ${
+                        kycStatus?.onboarding.isPersonalInfoCompleted ? "text-green-600" : "text-yellow-600"
+                      }`}
                     >
-                      {getAccountSetupStatus().status}
+                      {kycStatus?.onboarding.isPersonalInfoCompleted ? "Completed" : "Not Started"}
                     </p>
                   </div>
                   <svg className="size-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -425,21 +434,34 @@ export default function Dashboard() {
                   </svg>
                 </div>
 
+                {/* Business Info Step */}
                 <div
                   className={`flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors ${
-                    isKycIncomplete()
+                    !kycStatus?.onboarding.isPersonalInfoCompleted
                       ? "cursor-not-allowed bg-gray-50 opacity-60"
+                      : kycStatus?.onboarding.isBusinessOrProfessionalInfoCompleted
+                      ? "cursor-pointer bg-white hover:bg-gray-50"
                       : "cursor-pointer bg-white hover:bg-gray-50"
                   }`}
-                  onClick={() => !isKycIncomplete() && router.push("/add-settlement-bank")}
+                  onClick={() => kycStatus?.onboarding.isPersonalInfoCompleted && router.push("/business-information")}
                 >
                   <div
                     className={`flex size-6 items-center justify-center rounded-full ${
-                      isKycIncomplete() ? "bg-gray-100" : "bg-yellow-100"
+                      !kycStatus?.onboarding.isPersonalInfoCompleted
+                        ? "bg-gray-100"
+                        : kycStatus?.onboarding.isBusinessOrProfessionalInfoCompleted
+                        ? "bg-green-100"
+                        : "bg-yellow-100"
                     }`}
                   >
                     <svg
-                      className={`size-4 ${isKycIncomplete() ? "text-gray-400" : "text-yellow-600"}`}
+                      className={`size-4 ${
+                        !kycStatus?.onboarding.isPersonalInfoCompleted
+                          ? "text-gray-400"
+                          : kycStatus?.onboarding.isBusinessOrProfessionalInfoCompleted
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -448,20 +470,38 @@ export default function Dashboard() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                       />
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className={`text-sm font-medium ${isKycIncomplete() ? "text-gray-500" : "text-gray-900"}`}>
-                      Add settlement Bank Account
+                    <h3
+                      className={`text-sm font-medium ${
+                        !kycStatus?.onboarding.isPersonalInfoCompleted ? "text-gray-500" : "text-gray-900"
+                      }`}
+                    >
+                      Business Information
                     </h3>
-                    <p className={`text-xs ${isKycIncomplete() ? "text-gray-400" : "text-yellow-600"}`}>
-                      {isKycIncomplete() ? "Complete KYC first" : "Not Verified"}
+                    <p
+                      className={`text-xs ${
+                        !kycStatus?.onboarding.isPersonalInfoCompleted
+                          ? "text-gray-400"
+                          : kycStatus?.onboarding.isBusinessOrProfessionalInfoCompleted
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {!kycStatus?.onboarding.isPersonalInfoCompleted
+                        ? "Complete personal info first"
+                        : kycStatus?.onboarding.isBusinessOrProfessionalInfoCompleted
+                        ? "Completed"
+                        : "Not Started"}
                     </p>
                   </div>
                   <svg
-                    className={`size-5 ${isKycIncomplete() ? "text-gray-300" : "text-gray-400"}`}
+                    className={`size-5 ${
+                      !kycStatus?.onboarding.isPersonalInfoCompleted ? "text-gray-300" : "text-gray-400"
+                    }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -470,20 +510,34 @@ export default function Dashboard() {
                   </svg>
                 </div>
 
+                {/* Settlement Bank Step */}
                 <div
                   className={`flex items-center gap-3 rounded-lg border border-gray-200 p-3 transition-colors ${
                     isKycIncomplete()
                       ? "cursor-not-allowed bg-gray-50 opacity-60"
-                      : "cursor-not-allowed bg-gray-50 opacity-60"
+                      : kycStatus?.onboarding.isSettlementBankAdded
+                      ? "cursor-pointer bg-white hover:bg-gray-50"
+                      : "cursor-pointer bg-white hover:bg-gray-50"
                   }`}
+                  onClick={() => !isKycIncomplete() && router.push("/add-settlement-bank")}
                 >
                   <div
                     className={`flex size-6 items-center justify-center rounded-full ${
-                      isKycIncomplete() ? "bg-gray-100" : "bg-gray-100"
+                      isKycIncomplete()
+                        ? "bg-gray-100"
+                        : kycStatus?.onboarding.isSettlementBankAdded
+                        ? "bg-green-100"
+                        : "bg-yellow-100"
                     }`}
                   >
                     <svg
-                      className={`size-4 ${isKycIncomplete() ? "text-gray-400" : "text-gray-400"}`}
+                      className={`size-4 ${
+                        isKycIncomplete()
+                          ? "text-gray-400"
+                          : kycStatus?.onboarding.isSettlementBankAdded
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -492,20 +546,32 @@ export default function Dashboard() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
                       />
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className={`text-sm font-medium ${isKycIncomplete() ? "text-gray-500" : "text-gray-500"}`}>
-                      Create your first payment
+                    <h3 className={`text-sm font-medium ${isKycIncomplete() ? "text-gray-500" : "text-gray-900"}`}>
+                      Add Settlement Bank
                     </h3>
-                    <p className={`text-xs ${isKycIncomplete() ? "text-gray-400" : "text-gray-400"}`}>
-                      {isKycIncomplete() ? "Complete KYC first" : "Pending"}
+                    <p
+                      className={`text-xs ${
+                        isKycIncomplete()
+                          ? "text-gray-400"
+                          : kycStatus?.onboarding.isSettlementBankAdded
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {isKycIncomplete()
+                        ? "Complete KYC first"
+                        : kycStatus?.onboarding.isSettlementBankAdded
+                        ? "Completed"
+                        : "Not Started"}
                     </p>
                   </div>
                   <svg
-                    className={`size-5 ${isKycIncomplete() ? "text-gray-300" : "text-gray-300"}`}
+                    className={`size-5 ${isKycIncomplete() ? "text-gray-300" : "text-gray-400"}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -934,10 +1000,11 @@ export default function Dashboard() {
 
       {/* Welcome Modal */}
       <WelcomeModal
-        isOpen={showWelcomeModal}
-        onRequestClose={handleWelcomeModalClose}
+        isOpen={shouldShowWelcomeModal()}
+        onRequestClose={() => {}} // No-op since modal is controlled by KYC status
         onGetStarted={handleGetStarted}
         loading={false}
+        kycStatus={kycStatus}
       />
     </section>
   )
