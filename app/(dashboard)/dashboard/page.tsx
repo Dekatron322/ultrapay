@@ -47,6 +47,7 @@ export default function Dashboard() {
   const [showPaymentLinkSetupModal, setShowPaymentLinkSetupModal] = useState(false)
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawLoading, setWithdrawLoading] = useState(false)
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
 
   // Determine if welcome modal should show based on KYC status
   const shouldShowWelcomeModal = () => {
@@ -56,6 +57,11 @@ export default function Dashboard() {
     // Show welcome modal if user hasn't completed any setup steps
     return onboarding.completedQuickSetupSteps === 0
   }
+
+  // Update welcome modal visibility based on KYC status
+  useEffect(() => {
+    setShowWelcomeModal(shouldShowWelcomeModal())
+  }, [kycStatus])
 
   // Fetch KYC status on component mount
   useEffect(() => {
@@ -1000,8 +1006,8 @@ export default function Dashboard() {
 
       {/* Welcome Modal */}
       <WelcomeModal
-        isOpen={shouldShowWelcomeModal()}
-        onRequestClose={() => {}} // No-op since modal is controlled by KYC status
+        isOpen={showWelcomeModal}
+        onRequestClose={() => setShowWelcomeModal(false)}
         onGetStarted={handleGetStarted}
         loading={false}
         kycStatus={kycStatus}

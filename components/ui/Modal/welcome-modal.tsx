@@ -36,9 +36,13 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
     >
       <div className="flex w-full items-center justify-between bg-[#F3F4F6] p-4">
         <h2 className="text-lg font-bold">Hello {user?.fullName || "User"}!</h2>
-        <div onClick={onRequestClose} className="cursor-pointer">
+        <button
+          onClick={onRequestClose}
+          className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+          aria-label="Close modal"
+        >
           <CloseIcon />
-        </div>
+        </button>
       </div>
       <div className="px-4 pb-6">
         <div className="my-2 lg:my-6">
