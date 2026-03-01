@@ -16,6 +16,7 @@ interface FormInputProps {
   size?: "sm" | "md" | "lg"
   maxLength?: number
   readOnly?: boolean
+  IconComponent?: React.ComponentType<{ color?: string; className?: string; size?: number }>
 }
 
 export const FormInputModule: React.FC<FormInputProps> = ({
@@ -32,6 +33,7 @@ export const FormInputModule: React.FC<FormInputProps> = ({
   size = "md",
   maxLength,
   readOnly,
+  IconComponent,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -57,6 +59,11 @@ export const FormInputModule: React.FC<FormInputProps> = ({
           transition-all duration-200
         `}
       >
+        {IconComponent && (
+          <div className="mr-2">
+            <IconComponent color="#100A55" size={18} />
+          </div>
+        )}
         <input
           type={type}
           placeholder={placeholder}

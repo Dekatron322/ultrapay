@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "lib/redux/store"
 import { ButtonModule } from "components/ui/Button/Button"
 import { FormInputModule as BasicFormInput } from "components/ui/Input/Input"
+import { DatePickerModule } from "components/ui/Input/DatePicker"
 import { FormInputModule } from "components/ui/Input/EmailInput"
 import { motion } from "framer-motion"
 import { FormSelectModule } from "components/ui/Input/FormSelectModule"
@@ -366,6 +367,21 @@ const AccountSetup: React.FC = () => {
     // Auto-verify ID number when user types
     if (name === "idNumber" && value.toString().trim().length >= 6 && formData.idType) {
       verifyIdNumber()
+    }
+  }
+
+  // Handle date picker changes
+  const handleDateChange = (date: Date | null, e?: React.SyntheticEvent<any> | undefined) => {
+    const formattedDate = date ? date.toISOString().split("T")[0] || "" : ""
+    setFormData((prev) => ({
+      ...prev,
+      dateOfBirth: formattedDate,
+    }))
+
+    // Clear errors when user selects a date
+    if (formError) setFormError(null)
+    if (fieldErrors.dateOfBirth) {
+      setFieldErrors((prev) => ({ ...prev, dateOfBirth: false }))
     }
   }
 
@@ -1102,15 +1118,15 @@ const AccountSetup: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <BasicFormInput
+                    <DatePickerModule
                       label="Date of Birth"
-                      type="date"
                       name="dateOfBirth"
-                      placeholder=""
                       value={formData.dateOfBirth}
-                      onChange={handleInputChange}
+                      onChange={handleDateChange}
                       required
                       error={fieldErrors.dateOfBirth}
+                      maxDate={new Date()}
+                      placeholder="Select your date of birth"
                     />
 
                     <FormSelectModule

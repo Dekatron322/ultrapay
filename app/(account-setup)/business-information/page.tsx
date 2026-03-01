@@ -1367,6 +1367,7 @@ const BusinessInformation: React.FC = () => {
                     placeholder="Enter city"
                     required
                     error={fieldErrors.city}
+                    IconComponent={(iconProps) => <MapIconOutline size={18} {...iconProps} />}
                   />
 
                   <div>
