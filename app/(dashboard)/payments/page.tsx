@@ -944,6 +944,37 @@ export default function Dashboard() {
     sortOrder: undefined,
   })
 
+  // Filter options
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "Active", label: "Active" },
+    { value: "Completed", label: "Completed" },
+    { value: "Awaiting", label: "Awaiting" },
+  ]
+
+  const paymentSourceOptions = [
+    { value: "", label: "All Sources" },
+    { value: "Static QR", label: "Static QR" },
+    { value: "Dynamic QR", label: "Dynamic QR" },
+    { value: "Link", label: "Payment Link" },
+    { value: "API", label: "API" },
+  ]
+
+  const assetTypeOptions = [
+    { value: "", label: "All Types" },
+    { value: "Flexible", label: "Flexible Amount" },
+    { value: "Fixed", label: "Fixed Amount" },
+  ]
+
+  const sortOptions: SortOption[] = [
+    { label: "Date Created (Newest)", value: "created", order: "desc" },
+    { label: "Date Created (Oldest)", value: "created", order: "asc" },
+    { label: "Label (A-Z)", value: "label", order: "asc" },
+    { label: "Label (Z-A)", value: "label", order: "desc" },
+    { label: "Amount (High to Low)", value: "amount", order: "desc" },
+    { label: "Amount (Low to High)", value: "amount", order: "asc" },
+  ]
+
   const handleViewPayment = (payment: any) => {
     setSelectedTransaction(payment)
     setIsModalOpen(true)
@@ -1041,11 +1072,11 @@ export default function Dashboard() {
     const baseMultiplier = timeFilter === "day" ? 0.03 : timeFilter === "week" ? 0.2 : timeFilter === "month" ? 1 : 4
 
     return {
-      totalRevenue: Math.floor(25000000 + Math.random() * 5000000) * baseMultiplier,
-      collectionEfficiency: 85 + Math.random() * 10,
-      outstandingArrears: Math.floor(45000000 + Math.random() * 5000000),
-      todaysCollection: Math.floor(1500000 + Math.random() * 500000),
-      availableBalance: Math.floor(8500000 + Math.random() * 2000000),
+      totalRevenue: 0.0,
+      collectionEfficiency: 0.0,
+      outstandingArrears: 0.0,
+      todaysCollection: 0.0,
+      availableBalance: 0.0,
     }
   }
 
@@ -1075,105 +1106,7 @@ export default function Dashboard() {
   }
 
   // Enhanced mock payment data
-  const mockPayments: Payment[] = [
-    {
-      id: 1,
-      type: "Static QR",
-      label: "In-store Counter",
-      amount: "Flexible",
-      status: "Active",
-      created: "Oct 12, 2025",
-      lastActivity: "2 hours ago",
-      totalReceived: 24500,
-      successfulPayments: 42,
-    },
-    {
-      id: 2,
-      type: "Dynamic QR",
-      label: "INV-20931",
-      amount: "₦45,000",
-      status: "Completed",
-      created: "Oct 12, 2025",
-      lastActivity: "1 day ago",
-      totalReceived: 45000,
-      successfulPayments: 1,
-    },
-    {
-      id: 3,
-      type: "Link",
-      label: "October Subscription",
-      amount: "Fixed ₦10,000",
-      status: "Active",
-      created: "Oct 12, 2025",
-      lastActivity: "3 hours ago",
-      totalReceived: 100000,
-      successfulPayments: 10,
-    },
-    {
-      id: 4,
-      type: "API",
-      label: "intent_7gH29",
-      amount: "₦120,000",
-      status: "Awaiting",
-      created: "Oct 12, 2025",
-      lastActivity: "-",
-      totalReceived: 0,
-      successfulPayments: 0,
-    },
-    {
-      id: 5,
-      type: "Static QR",
-      label: "Website Payment",
-      amount: "Flexible",
-      status: "Active",
-      created: "Oct 11, 2025",
-      lastActivity: "5 hours ago",
-      totalReceived: 178500,
-      successfulPayments: 89,
-    },
-    {
-      id: 6,
-      type: "Dynamic QR",
-      label: "INV-20932",
-      amount: "₦75,000",
-      status: "Completed",
-      created: "Oct 10, 2025",
-      lastActivity: "2 days ago",
-      totalReceived: 75000,
-      successfulPayments: 1,
-    },
-  ]
-
-  // Filter options
-  const statusOptions = [
-    { value: "", label: "All Status" },
-    { value: "Active", label: "Active" },
-    { value: "Completed", label: "Completed" },
-    { value: "Awaiting", label: "Awaiting" },
-  ]
-
-  const paymentSourceOptions = [
-    { value: "", label: "All Types" },
-    { value: "Static QR", label: "Static QR" },
-    { value: "Dynamic QR", label: "Dynamic QR" },
-    { value: "Link", label: "Link" },
-    { value: "API", label: "API" },
-  ]
-
-  const assetTypeOptions = [
-    { value: "", label: "All Amount Types" },
-    { value: "Flexible", label: "Flexible" },
-    { value: "Fixed", label: "Fixed" },
-  ]
-
-  const sortOptions: SortOption[] = [
-    { label: "Date (Newest)", value: "date", order: "desc" },
-    { label: "Date (Oldest)", value: "date", order: "asc" },
-    { label: "Amount (High to Low)", value: "amount", order: "desc" },
-    { label: "Amount (Low to High)", value: "amount", order: "asc" },
-    { label: "Status (A-Z)", value: "status", order: "asc" },
-    { label: "Status (Z-A)", value: "status", order: "desc" },
-  ]
+  const mockPayments: Payment[] = []
 
   // Filter handlers
   const handleFilterChange = (key: keyof DashboardFilters, value: string | number | boolean | undefined) => {

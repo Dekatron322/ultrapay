@@ -19,7 +19,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({
   onRequestClose,
   onWithdraw,
   loading = false,
-  currentBalance = 12500,
+  currentBalance = 0,
 }) => {
   const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null)
   const [customAmount, setCustomAmount] = useState("")

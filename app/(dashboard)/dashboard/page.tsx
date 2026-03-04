@@ -146,29 +146,29 @@ export default function Dashboard() {
 
     return {
       // Customer metrics
-      totalCustomers: Math.floor(125000 + Math.random() * 5000),
-      prepaidCustomers: Math.floor(85000 + Math.random() * 3000),
-      postpaidCustomers: Math.floor(35000 + Math.random() * 2000),
-      estimatedBillingCustomers: Math.floor(5000 + Math.random() * 1000),
+      totalCustomers: 0,
+      prepaidCustomers: 0,
+      postpaidCustomers: 0,
+      estimatedBillingCustomers: 0,
 
       // Financial metrics
-      totalRevenue: Math.floor(25000000 + Math.random() * 5000000) * baseMultiplier,
-      collectionEfficiency: 85 + Math.random() * 10, // Percentage
-      outstandingArrears: Math.floor(45000000 + Math.random() * 5000000),
+      totalRevenue: 0.0,
+      collectionEfficiency: 0.0, // Percentage
+      outstandingArrears: 0.0,
 
       // Operational metrics
-      newConnectionsMTD: Math.floor(1200 + Math.random() * 300) * baseMultiplier,
-      prepaidVends: Math.floor(50000 + Math.random() * 10000) * baseMultiplier,
-      tokensGenerated: Math.floor(75000 + Math.random() * 15000) * baseMultiplier,
-      metersProgrammed: Math.floor(1800 + Math.random() * 400) * baseMultiplier,
-      pendingMeterProgramming: 425,
-      arrearsCollectedMTD: Math.floor(12000000 + Math.random() * 3000000) * baseMultiplier,
+      newConnectionsMTD: 0,
+      prepaidVends: 0,
+      tokensGenerated: 0,
+      metersProgrammed: 0,
+      pendingMeterProgramming: 0,
+      arrearsCollectedMTD: 0.0,
 
       // New summary metrics
-      todaysCollection: Math.floor(1500000 + Math.random() * 500000),
-      pendingConfirmations: Math.floor(450000 + Math.random() * 150000),
-      settledToday: Math.floor(1250000 + Math.random() * 350000),
-      availableBalance: Math.floor(8500000 + Math.random() * 2000000),
+      todaysCollection: 0.0,
+      pendingConfirmations: 0.0,
+      settledToday: 0.0,
+      availableBalance: 0.0,
     }
   }
 

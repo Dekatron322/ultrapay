@@ -619,29 +619,29 @@ export default function Dashboard() {
 
     return {
       // Customer metrics
-      totalCustomers: Math.floor(125000 + Math.random() * 5000),
-      prepaidCustomers: Math.floor(85000 + Math.random() * 3000),
-      postpaidCustomers: Math.floor(35000 + Math.random() * 2000),
-      estimatedBillingCustomers: Math.floor(5000 + Math.random() * 1000),
+      totalCustomers: 0,
+      prepaidCustomers: 0,
+      postpaidCustomers: 0,
+      estimatedBillingCustomers: 0,
 
       // Financial metrics
-      totalRevenue: Math.floor(25000000 + Math.random() * 5000000) * baseMultiplier,
-      collectionEfficiency: 85 + Math.random() * 10, // Percentage
-      outstandingArrears: Math.floor(45000000 + Math.random() * 5000000),
+      totalRevenue: 0.0,
+      collectionEfficiency: 0.0, // Percentage
+      outstandingArrears: 0.0,
 
       // Operational metrics
-      newConnectionsMTD: Math.floor(1200 + Math.random() * 300) * baseMultiplier,
-      prepaidVends: Math.floor(50000 + Math.random() * 10000) * baseMultiplier,
-      tokensGenerated: Math.floor(75000 + Math.random() * 15000) * baseMultiplier,
-      metersProgrammed: Math.floor(1800 + Math.random() * 400) * baseMultiplier,
-      pendingMeterProgramming: 425,
-      arrearsCollectedMTD: Math.floor(12000000 + Math.random() * 3000000) * baseMultiplier,
+      newConnectionsMTD: 0,
+      prepaidVends: 0,
+      tokensGenerated: 0,
+      metersProgrammed: 0,
+      pendingMeterProgramming: 0,
+      arrearsCollectedMTD: 0.0,
 
       // New summary metrics
-      todaysCollection: Math.floor(1500000 + Math.random() * 500000),
-      pendingConfirmations: Math.floor(450000 + Math.random() * 150000),
-      settledToday: Math.floor(1250000 + Math.random() * 350000),
-      availableBalance: Math.floor(8500000 + Math.random() * 2000000),
+      todaysCollection: 0.0,
+      pendingConfirmations: 0.0,
+      settledToday: 0.0,
+      availableBalance: 0.0,
     }
   }
 
@@ -687,58 +687,7 @@ export default function Dashboard() {
   }
 
   // Mock transaction data
-  const mockTransactions = [
-    {
-      id: 1,
-      reference: "TXN-001234",
-      paymentSource: "Payment Link",
-      assetPaid: "USDT",
-      amount: 15000,
-      assetQuantity: 15000,
-      status: "successful",
-      date: "2024-01-09T10:30:00Z",
-    },
-    {
-      id: 2,
-      reference: "TXN-001235",
-      paymentSource: "Static QR",
-      assetPaid: "BTC",
-      amount: 8500,
-      assetQuantity: 0.00021,
-      status: "confirming",
-      date: "2024-01-09T09:15:00Z",
-    },
-    {
-      id: 3,
-      reference: "TXN-001236",
-      paymentSource: "Payment Link",
-      assetPaid: "USDC",
-      amount: 2500,
-      assetQuantity: 2500,
-      status: "successful",
-      date: "2024-01-09T08:45:00Z",
-    },
-    {
-      id: 4,
-      reference: "TXN-001237",
-      paymentSource: "Static QR",
-      assetPaid: "USDT",
-      amount: 22000,
-      assetQuantity: 22000,
-      status: "successful",
-      date: "2024-01-09T07:30:00Z",
-    },
-    {
-      id: 5,
-      reference: "TXN-001238",
-      paymentSource: "Payment Link",
-      assetPaid: "BTC",
-      amount: 12000,
-      assetQuantity: 0.00029,
-      status: "expired",
-      date: "2024-01-09T06:15:00Z",
-    },
-  ]
+  const mockTransactions: any[] = []
 
   // Filter options
   const statusOptions = [
@@ -1120,7 +1069,10 @@ export default function Dashboard() {
               <div className="mb-4 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 p-4">
                 <div className="text-center">
                   <p className="mb-1 text-sm font-medium text-gray-500">Available Balance</p>
-                  <p className="text-3xl font-bold text-gray-900 sm:text-4xl">₦12,500.00</p>
+                  <p className="text-3xl font-bold text-gray-900 sm:text-4xl">
+                    {selectedCurrencySymbol}
+                    {utilityData.availableBalance.toLocaleString()}
+                  </p>
                   <div className="mt-2 flex items-center justify-center gap-2">
                     <div className="size-2  rounded-full bg-green-500"></div>
                     <p className="text-xs text-green-600">+2.5% from last month</p>
@@ -1133,7 +1085,7 @@ export default function Dashboard() {
                 {/* Pending Transactions */}
                 <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
                   <p className="mb-1 text-xs font-medium text-gray-500 sm:text-sm">Pending</p>
-                  <p className="text-lg font-bold text-gray-900 sm:text-xl">3</p>
+                  <p className="text-lg font-bold text-gray-900 sm:text-xl">0</p>
                   <p className="mt-1 text-xs text-amber-600">Awaiting confirmation</p>
                 </div>
 
@@ -1604,7 +1556,7 @@ export default function Dashboard() {
         onRequestClose={() => setWithdrawModalOpen(false)}
         onWithdraw={handleWithdraw}
         loading={isWithdrawLoading}
-        currentBalance={12500}
+        currentBalance={0.0}
       />
     </section>
   )
