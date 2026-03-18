@@ -93,9 +93,9 @@ const ForgotPassword: React.FC = () => {
   const currentTestimonialData = testimonials[currentTestimonial]
 
   return (
-    <div className="relative flex min-h-screen grid-cols-1 bg-gradient-to-br from-[#ffffff]">
+    <div className="flex min-h-screen justify-between bg-gradient-to-br from-[#ffffff]">
       {/* Form Container */}
-      <div className="container relative flex flex-col items-center justify-center border-r-2 border-[#ffffff80] py-8 max-sm:px-5 md:w-[70%]">
+      <div className="relative flex flex-col items-center justify-center border-r-2 border-[#ffffff80] py-8 max-sm:px-5 md:w-[70%]">
         <div className="absolute left-0 top-4 w-full border-b border-gray-200 pb-4">
           <div className="px-8">
             <Image src="/ultra-pay/logo.png" alt="Logo" width={155} height={100} />

@@ -129,9 +129,9 @@ const SignIn: React.FC = () => {
   const currentTestimonialData = testimonials[currentTestimonial]
 
   return (
-    <div className="relative flex min-h-screen grid-cols-1 bg-gradient-to-br from-[#ffffff]">
+    <div className="flex min-h-screen justify-between bg-gradient-to-br from-[#ffffff]">
       {/* Form Container */}
-      <div className="container relative flex flex-col items-center justify-center border-r-2 border-[#ffffff80] py-8 max-sm:px-5 md:w-[70%]">
+      <div className="relative flex flex-col items-center justify-center border-r-2 border-[#ffffff80] py-8 max-sm:px-5 md:w-[70%]">
         <div className="absolute left-0 top-4 w-full border-b border-gray-200 pb-4">
           <div className="px-8">
             <Image src="/ultra-pay/logo.png" alt="Logo" width={155} height={100} />
@@ -147,11 +147,11 @@ const SignIn: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-xl rounded-2xl lg:p-8 "
+            className="flex w-full flex-col items-center justify-center rounded-2xl lg:p-8 "
           >
             <div className="mb-8 border-b pb-6 ">
               <h1 className="text-3xl font-bold text-[#1447E6]">Welcome Back!</h1>
-              <p className="mt-2 text-[#101836]">Enter your email address and password to continue.</p>
+              <p className="mt-2 text-center text-[#101836]">Enter your email address and password to continue.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -274,7 +274,7 @@ const SignIn: React.FC = () => {
 
       {/* Testimonial Slider Container */}
       <div
-        className="relative w-[30%] bg-[url('/ultra-pay/bg.png')]  bg-cover bg-center bg-no-repeat max-sm:hidden"
+        className="relative h-screen min-h-screen w-[30%] bg-[url('/ultra-pay/bg.png')] bg-cover bg-center bg-no-repeat max-sm:hidden"
         style={{ backgroundPosition: "center 0%" }}
       >
         <motion.div

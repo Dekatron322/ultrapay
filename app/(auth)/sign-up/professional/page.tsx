@@ -263,200 +263,175 @@ const ProfessionalSignUp: React.FC = () => {
   const currentTestimonialData = testimonials[currentTestimonial]
 
   return (
-    <div className="relative flex min-h-screen grid-cols-1 bg-gradient-to-br from-[#ffffff]">
-      {/* Logo with full-width border */}
-      <div className="absolute left-0 right-0 top-4 z-10 w-screen border-b border-gray-200 pb-4">
-        <div className="container  w-full px-4">
-          <Image src="/ultra-pay/logo.png" alt="Logo" width={155} height={100} />
+    <div className="flex min-h-screen justify-between bg-gradient-to-br from-[#ffffff]">
+      {/* Form Container */}
+      <div className="relative flex flex-col items-center justify-center border-r-2 border-[#ffffff80] py-8 max-sm:px-5 md:w-[70%]">
+        <div className="absolute left-0 top-4 w-full border-b border-gray-200 pb-4">
+          <div className="px-8">
+            <Image src="/ultra-pay/logo.png" alt="Logo" width={155} height={100} />
+          </div>
         </div>
-      </div>
-
-      {/* Form Container - FIXED for proper centering */}
-      <div className="relative flex min-h-screen  flex-col border-r-2 border-[#ffffff80] 2xl:container max-md:mx-auto max-md:w-full max-md:max-w-lg md:w-[50%] lg:w-[60%] xl:w-[70%] 2xl:w-[70%]">
-        {/* Centered Form Content - FIXED */}
-        <div className="flex flex-1 items-center justify-center py-8">
-          <motion.main
-            className="flex w-full flex-col items-center justify-center"
+        <motion.main
+          className="flex w-full flex-col items-center justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex w-full max-w-xl flex-col items-center justify-center rounded-2xl lg:p-8"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex w-full max-w-2xl flex-col rounded-2xl max-sm:px-4 max-sm:pt-10 sm:px-6 md:px-8  lg:justify-center lg:px-10 lg:py-8"
-            >
-              <div className="mb-8 border-b pb-2 sm:pb-6">
-                <h1 className="text-2xl font-bold text-[#1447E6] md:text-3xl">Join UltraPay</h1>
-                <p className="text-[#101836] md:mt-2">Enter your business details to get started</p>
-              </div>
+            <div className="mb-8 border-b pb-2 sm:pb-6">
+              <h1 className="text-center text-2xl font-bold text-[#1447E6] md:text-3xl">Join UltraPay</h1>
+              <p className="text-center text-[#101836] md:mt-2">Enter your business details to get started</p>
+            </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  <FormSelectModule
-                    label="Country of Registration"
-                    name="country"
-                    value={country}
-                    onChange={handleCountryChange}
-                    options={countryOptions}
-                    loading={systems.loading}
-                    required
-                  />
-                </motion.div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.4 }}>
+                <FormSelectModule
+                  label="Country of Registration"
+                  name="country"
+                  value={country}
+                  onChange={handleCountryChange}
+                  options={countryOptions}
+                  loading={systems.loading}
+                  required
+                />
+              </motion.div>
 
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }}>
+                <FormInputModule
+                  label="Display Name"
+                  type="text"
+                  name="display-name"
+                  placeholder="Your professional name"
+                  value={displayName}
+                  onChange={handleDisplayNameChange}
+                  required
+                />
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}>
+                <FormSelectModule
+                  label="Profession"
+                  name="profession"
+                  value={profession}
+                  onChange={handleProfessionChange}
+                  options={professionOptions}
+                  required
+                />
+              </motion.div>
+
+              {profession === "Other" && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <FormInputModule
-                    label="Display Name"
+                    label="Please specify your profession"
                     type="text"
-                    name="display-name"
-                    placeholder="Your professional name"
-                    value={displayName}
-                    onChange={handleDisplayNameChange}
+                    name="custom-profession"
+                    placeholder="Enter your profession"
+                    value={customProfession}
+                    onChange={handleCustomProfessionChange}
                     required
                   />
                 </motion.div>
+              )}
 
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.7 }}>
+                <EmailInput
+                  label="Email Address"
+                  type="email"
+                  name="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={handleEmailChange}
+                  required
+                />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                className=" flex items-center justify-between"
+              >
+                <div className="flex items-center md:mt-6">
+                  <p className="block text-sm text-[#101828]">
+                    By clicking continue, you accept our{" "}
+                    <Link
+                      href="/"
+                      className="font-medium text-[#1447E6] underline transition-all duration-200 ease-in-out hover:text-[#100A55]"
+                    >
+                      Terms and Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/"
+                      className="font-medium text-[#1447E6] underline transition-all duration-200 ease-in-out hover:text-[#100A55]"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </p>
+                </div>
+              </motion.div>
+
+              {professionalRegistrationError && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-md bg-red-50 p-3 text-sm text-red-600"
                 >
-                  <FormSelectModule
-                    label="Profession"
-                    name="profession"
-                    value={profession}
-                    onChange={handleProfessionChange}
-                    options={professionOptions}
-                    required
-                  />
+                  {professionalRegistrationError}
                 </motion.div>
+              )}
 
-                {profession === "Other" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FormInputModule
-                      label="Please specify your profession"
-                      type="text"
-                      name="custom-profession"
-                      placeholder="Enter your profession"
-                      value={customProfession}
-                      onChange={handleCustomProfessionChange}
-                      required
-                    />
-                  </motion.div>
-                )}
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.7 }}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.9 }}>
+                <ButtonModule
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={isButtonDisabled}
+                  loading={isRegisteringProfessional}
+                  className="w-full transform  py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                  whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
+                  whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
                 >
-                  <EmailInput
-                    label="Email Address"
-                    type="email"
-                    name="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                  />
-                </motion.div>
+                  {isRegisteringProfessional ? "Creating Account..." : "Create Account"}
+                </ButtonModule>
+              </motion.div>
+            </form>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                  className=" flex items-center justify-between"
-                >
-                  <div className="flex items-center md:mt-6">
-                    <p className="block text-sm text-[#101828]">
-                      By clicking continue, you accept our{" "}
-                      <Link
-                        href="/"
-                        className="font-medium text-[#1447E6] underline transition-all duration-200 ease-in-out hover:text-[#100A55]"
-                      >
-                        Terms and Conditions
-                      </Link>{" "}
-                      and{" "}
-                      <Link
-                        href="/"
-                        className="font-medium text-[#1447E6] underline transition-all duration-200 ease-in-out hover:text-[#100A55]"
-                      >
-                        Privacy Policy
-                      </Link>
-                    </p>
-                  </div>
-                </motion.div>
+            {/* Demo credentials hint */}
+          </motion.div>
 
-                {professionalRegistrationError && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-md bg-red-50 p-3 text-sm text-red-600"
-                  >
-                    {professionalRegistrationError}
-                  </motion.div>
-                )}
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.9 }}
-                >
-                  <ButtonModule
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    disabled={isButtonDisabled}
-                    loading={isRegisteringProfessional}
-                    className="w-full transform  py-3 font-medium transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-                    whileHover={!isButtonDisabled ? { scale: 1.01 } : {}}
-                    whileTap={!isButtonDisabled ? { scale: 0.99 } : {}}
-                  >
-                    {isRegisteringProfessional ? "Creating Account..." : "Create Account"}
-                  </ButtonModule>
-                </motion.div>
-              </form>
-
-              {/* Demo credentials hint */}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
-              className="mt-4 max-sm:mt-4"
-            >
-              <p className="text-sm text-[#101836]">
-                Already have an account?{" "}
-                <Link
-                  href="/"
-                  className="font-medium text-[#1447E6] transition-all duration-200 ease-in-out hover:text-[#100A55]"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </motion.div>
-          </motion.main>
-        </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
+            className="mt-4 max-sm:mt-4"
+          >
+            <p className="text-sm text-[#101836]">
+              Already have an account?{" "}
+              <Link
+                href="/"
+                className="font-medium text-[#1447E6] transition-all duration-200 ease-in-out hover:text-[#100A55]"
+              >
+                Sign in
+              </Link>
+            </p>
+          </motion.div>
+        </motion.main>
       </div>
 
-      {/* Testimonial Slider Container - UNCHANGED */}
+      {/* Testimonial Slider Container */}
       <div
-        className="relative z-50 bg-[url('/ultra-pay/bg.png')] bg-cover bg-center bg-no-repeat max-md:hidden md:w-[50%] lg:w-[40%] xl:w-[30%] 2xl:w-[30%]"
+        className="relative h-screen min-h-screen w-[30%] bg-[url('/ultra-pay/bg.png')] bg-cover bg-center bg-no-repeat max-sm:hidden"
         style={{ backgroundPosition: "center 0%" }}
       >
         <motion.div
